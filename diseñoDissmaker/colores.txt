@@ -1,0 +1,17 @@
+#646c74 Fondo
+#596267 Barra
+#677075 Paneles de la barra
+#536566 Metronomo
+#d8e0e4 Logos y letra
+#7b848f Letras 2
+#283136 Padre
+#172025 Hijo
+#576065 Boton
+#b5e56a Solo
+#5f686d JPanel
+#3f484d BackJPanel
+#545c60 FondoBotones
+#596165 BotonesCerrar
+#9fffff HoverVerde
+#ffe9c9 HoverRojo
+#383f44 BotonPLay
