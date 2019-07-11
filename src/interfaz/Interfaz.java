@@ -1,26 +1,26 @@
 package interfaz;
 
-import colores.Colores;// Importa clase de colores
 import java.awt.FontFormatException;
 import java.awt.HeadlessException;
 import java.io.IOException;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.UIManager;
-import secciones.Titlebar;
+import javax.swing.JLabel;
+
+import colores.Colores;// Importa clase de colores
+import secciones.Controlbar;
+import secciones.Titlebar;// Importa el titlebar
 
 public class Interfaz extends JFrame {
 
-    private final int ancho = 1440;
-    private final int alto = 900;
+    private final int ancho = 1366;
+    private final int alto = 768;
     private Colores colores;
-    private JMenuBar jmbBarra;
-    private JMenu jmArchivo;
-    private JMenuItem jmiAbrir, jmiGuardar, jmiExportar, jmiCerrrar;
-
+    private ImageIcon iilogo;
+    private JLabel lblogo;
+    
     private Titlebar titlebar;
+    private Controlbar controlbar;
 
     public Interfaz() throws HeadlessException, FontFormatException, IOException {
         this.setSize(ancho, alto);
@@ -28,47 +28,33 @@ public class Interfaz extends JFrame {
         this.setLocationRelativeTo(null);
         this.setLayout(null);
 //        this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-        this.setUndecorated(true);
+//        this.setUndecorated(true);
 
         //inicializa  clase colores
         colores = new Colores();
 
         //Pinta el fondo del frame
         this.getContentPane().setBackground(colores.getBackground());
-
-        titlebar = new Titlebar(ancho, "");
+        
+        // Carga logotipo
+        iilogo = new ImageIcon("src/img/logo.png");
+        
+        // Inicializa logotipo
+        lblogo = new JLabel(iilogo);
+        lblogo.setBounds(ancho-350, alto-219, 350, 219);
+        
+        // Inicializa la barra de titulo
+        titlebar = new Titlebar(ancho, "Sin titulo");
         titlebar.setLocation(0, 0);
+        
+        //Inicializa la barra de controles
+        controlbar = new Controlbar();
+        controlbar.setLocation(4, 55);
 
-        //Cambia los colores de la barra de menu
-//        UIManager.put("Menu.background", colores.getBarColor());
-        UIManager.put("MenuBar.background", colores.getBarChild());
-        UIManager.put("Menu.foreground", colores.getTextColor());
-        UIManager.put("MenuBar.border", false);
-//        UIManager.put("Menu.font", fuente.getFont());
-//        UIManager.put("MenuItem.font", fuente.getFont());
-
-        UIManager.put("MenuItem.background", colores.getBarChild());
-        UIManager.put("MenuItem.foreground", colores.getTextColor());
-        UIManager.put("MenuItem.selectionBackground", colores.getTextColor());
-        UIManager.put("Menu.borderPainted", false);
-        UIManager.put("MenuItem.borderPainted", false);
-
-        //Crea barra de menu
-        jmbBarra = new JMenuBar();
-        jmbBarra.setBounds(0, 0, 200, 35);
-        jmArchivo = new JMenu("Archivo");
-        jmiAbrir = new JMenuItem("Abrir");
-        jmiCerrrar = new JMenuItem("Cerrar");
-        jmiExportar = new JMenuItem("Exportar");
-        jmiGuardar = new JMenuItem("Guardar");
-        jmbBarra.add(jmArchivo);
-        jmArchivo.add(jmiAbrir);
-        jmArchivo.add(jmiGuardar);
-        jmArchivo.add(jmiExportar);
-        jmArchivo.add(jmiCerrrar);
-
-//        add(jmbBarra);
-        add(titlebar);
+        this.add(lblogo);
+        this.add(controlbar);
+        this.add(titlebar);
+        
         setVisible(true);
     }
 

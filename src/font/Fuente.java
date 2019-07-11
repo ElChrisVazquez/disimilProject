@@ -16,7 +16,7 @@ public class Fuente {
      */
     public Fuente() throws FontFormatException, IOException {
         this.font = font;
-        font = Font.createFont(Font.TRUETYPE_FONT, new File("src/font/uni.ttf")).deriveFont(15f);
+        font = Font.createFont(Font.TRUETYPE_FONT, new File("src/font/uni.ttf")).deriveFont(10f);
     }
 
     /**
