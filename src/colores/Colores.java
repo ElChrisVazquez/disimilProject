@@ -4,8 +4,8 @@ import java.awt.Color;
 
 public class Colores {
 
-    private Color background, barColor, textColor, backgroundTree, treeFather, treeSon,
-            volPan, panel, backPanel, backRepro, barChild;
+    private Color background, barColor, textColor, backgroundTree, treeFather,
+            treeChild, volPan, panel, backPanel, backRepro, barChild, soundPanel;
 
     public Colores() {
         background = Color.decode("#646c74");
@@ -14,15 +14,17 @@ public class Colores {
         textColor = Color.decode("#d8e0e4");
         backgroundTree = Color.decode("#424c51");
         treeFather = Color.decode("#283136");
-        treeSon = Color.decode("#172025");
+        treeChild = Color.decode("#172025");
         volPan = Color.decode("#d99259");
         panel = Color.decode("#5f686d");
         backPanel = Color.decode("#3f484d");
         backRepro = Color.decode("#323b3f");
+        soundPanel = Color.decode("#5f686d");
     }
 
     /**
      * Fondo
+     *
      * @return #646c74
      */
     public Color getBackground() {
@@ -45,8 +47,8 @@ public class Colores {
         return treeFather;
     }
 
-    public Color getTreeSon() {
-        return treeSon;
+    public Color getTreeChild() {
+        return treeChild;
     }
 
     public Color getVolPan() {
@@ -68,4 +70,10 @@ public class Colores {
     public Color getBarChild() {
         return barChild;
     }
+
+    public Color getSoundPanel() {
+        return soundPanel;
+    }
+    
+    
 }

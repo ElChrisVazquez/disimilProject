@@ -52,12 +52,19 @@ public class Controlbar extends JPanel {
 
         //Inicializa los botones
         btnnuevo = new JButton(iinuevo);
+        btnnuevo.setBorder(null);
         btnabrir = new JButton(iiabrir);
+        btnabrir.setBorder(null);
         btnguardar = new JButton(iiguardar);
+        btnguardar.setBorder(null);
         btnplay = new JButton(iiplay);
+        btnplay.setBorder(null);
         btnstop = new JButton(iistop);
+        btnstop.setBorder(null);
         btnmetro = new JButton(iimetro);
+        btnmetro.setBorder(null);
         btnloop = new JButton(iiloop);
+        btnloop.setBorder(null);
 
         // Asigna tamaño, y posicion de botones
         btnnuevo.setBounds(0, 0, 30, 35);

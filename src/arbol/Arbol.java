@@ -21,8 +21,9 @@ public class Arbol extends JPanel {
     private Colores colores;
 
     public Arbol(File ruta, boolean esBiblioteca, int x, int y) throws IOException {
-        setSize(x, y);
-        setLayout(new BorderLayout());
+        this.setSize(x, y);
+        this.setLayout(new BorderLayout());
+        putClientProperty("JInternalFrame.isPalette", true);
         colores = new Colores();
         ftmModelo = new FileTreeModel(ruta);
         arbol = new JTree(ftmModelo);
@@ -74,12 +75,13 @@ public class Arbol extends JPanel {
         if (arbol.getCellRenderer() instanceof DefaultTreeCellRenderer) {
             final DefaultTreeCellRenderer renderer
                     = (DefaultTreeCellRenderer) (arbol.getCellRenderer());
-            renderer.setBackgroundNonSelectionColor(colores.getTreeSon());
+            renderer.setBackgroundNonSelectionColor(colores.getTreeChild());
             renderer.setBackgroundSelectionColor(colores.getTreeFather());
             renderer.setTextNonSelectionColor(colores.getTextColor());
             renderer.setTextSelectionColor(colores.getTextColor());
         }
         spArbol = new JScrollPane(arbol);
+        spArbol.setBorder(null);
         add(spArbol, BorderLayout.CENTER);
     }
 

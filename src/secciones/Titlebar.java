@@ -61,6 +61,7 @@ public class Titlebar extends JPanel {
 
         // Inicializa boton cerrar
         btncerrar = new JButton(iicerrar);
+        btncerrar.setBorder(null);
         btncerrar.setBounds(ancho - 30, 5, 20, 20);
         
         // Cambia imagen con hover
@@ -81,6 +82,7 @@ public class Titlebar extends JPanel {
         
         // Inicializa boton minimizar
         btnmin = new JButton(iimin);
+        btnmin.setBorder(null);
         btnmin.setBounds(ancho-55, 5, 20, 20);
         
         // Cambia imagen con hover
