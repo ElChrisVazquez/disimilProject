@@ -8,8 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import colores.Colores;// Importa clase de colores
+import java.io.File;
 import secciones.Controlbar;
 import secciones.Titlebar;// Importa el titlebar
+import secciones.TreePanel;
 
 public class Interfaz extends JFrame {
 
@@ -21,6 +23,7 @@ public class Interfaz extends JFrame {
     
     private Titlebar titlebar;
     private Controlbar controlbar;
+    private TreePanel treepanel;
 
     public Interfaz() throws HeadlessException, FontFormatException, IOException {
         this.setSize(ancho, alto);
@@ -28,7 +31,7 @@ public class Interfaz extends JFrame {
         this.setLocationRelativeTo(null);
         this.setLayout(null);
 //        this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-//        this.setUndecorated(true);
+        this.setUndecorated(true);
 
         //inicializa  clase colores
         colores = new Colores();
@@ -50,7 +53,12 @@ public class Interfaz extends JFrame {
         //Inicializa la barra de controles
         controlbar = new Controlbar();
         controlbar.setLocation(4, 55);
+        
+        // Inicializa el panel del arbol
+        treepanel = new TreePanel(alto, new File("src"));
+        treepanel.setLocation(4, titlebar.getHeight());
 
+        this.add(treepanel);
         this.add(lblogo);
         this.add(controlbar);
         this.add(titlebar);

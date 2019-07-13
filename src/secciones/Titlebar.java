@@ -17,7 +17,7 @@ import javax.swing.UIManager;
 
 public class Titlebar extends JPanel {
 
-    private final int alto = 80;
+    private final int alto = 90;
     private ImageIcon iiico, iicerrar, iicerrar_hover, iimin, iimin_hover;
     private JLabel lbico, lbtitle;
     private JButton btncerrar, btnmin;
@@ -25,7 +25,7 @@ public class Titlebar extends JPanel {
     private Fuente fuente;
     private JMenuBar jmbbarra;
     private JMenu jmarchivo;
-    private JMenuItem jmiabrir, jmiguardar, jmiexportar, jmicerrrar;
+    private JMenuItem jmiabrir, jmiguardar, jmiguardar_como, jmiexportar, jmicerrrar;
 
     public Titlebar(int ancho, String titulo) throws FontFormatException, IOException {
         this.setSize(ancho, alto);
@@ -120,9 +120,11 @@ public class Titlebar extends JPanel {
         jmicerrrar = new JMenuItem("Cerrar");
         jmiexportar = new JMenuItem("Exportar");
         jmiguardar = new JMenuItem("Guardar");
+        jmiguardar_como = new JMenuItem("Guardar como");
         jmbbarra.add(jmarchivo);
         jmarchivo.add(jmiabrir);
         jmarchivo.add(jmiguardar);
+        jmarchivo.add(jmiguardar_como);
         jmarchivo.add(jmiexportar);
         jmarchivo.add(jmicerrrar);
 
