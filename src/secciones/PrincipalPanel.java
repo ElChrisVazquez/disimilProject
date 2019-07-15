@@ -1,13 +1,12 @@
 package secciones;
 
 import colores.Colores;
-import java.awt.Color;
-import java.awt.Insets;
+import java.awt.FontFormatException;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 public class PrincipalPanel extends JPanel {
@@ -21,7 +20,7 @@ public class PrincipalPanel extends JPanel {
     private JPanel jpinterno;
     private BoxLayout boxLayout;
 
-    public PrincipalPanel(int alto) {
+    public PrincipalPanel(int alto) throws FontFormatException, IOException {
         this.alto = alto;
         this.setSize(ancho, alto);
         this.setLayout(null);
@@ -47,7 +46,7 @@ public class PrincipalPanel extends JPanel {
 
         splista = new ArrayList<>();
 
-        create("", "lorem");
+        create("", "lorem impsum lorem");
 
         if (!splista.isEmpty()) {
             splista.forEach((sound) -> jpinterno.add(sound));
@@ -57,7 +56,7 @@ public class PrincipalPanel extends JPanel {
         this.add(jspcaja);
     }
 
-    public void create(String path, String name) {
+    public void create(String path, String name) throws FontFormatException, IOException {
         sounPanel = new SoundPanel(name);
         splista.add(sounPanel);
     }

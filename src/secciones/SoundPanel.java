@@ -1,37 +1,42 @@
 package secciones;
 
+import botones.BtnSound;
 import colores.Colores;
-import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import font.Fuente;
+import java.awt.FontFormatException;
+import java.io.IOException;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
-public class SoundPanel extends JPanel{
-    
+public class SoundPanel extends JPanel {
+
     private final int ancho = 500;
     private final int alto = 100;
     private ImageIcon iimute, iimute_pressed, iisolo, iisolo_pressed, iipatron,
             iipatron_pressed, iipatron_relased, iisound, iisound_pressed,
             iiselected, iiselected_none;
     private JToggleButton[] btnpatron;
-    private JToggleButton btnselected, btnsound, btnmute, btnsolo;
+    private JToggleButton btnselected, btnmute, btnsolo;
     private String nombre;
     private Colores colores;
+    private Fuente fuente;
+    private BtnSound btnSound;
 
-    public SoundPanel(String nombre) {
+    public SoundPanel(String nombre) throws FontFormatException, IOException {
         this.nombre = nombre;
         this.setSize(ancho, alto);
         this.setLayout(null);
-        
+
         // Inicializa colores
         colores = new Colores();
-        
+
         // Cambia color de fondo
         this.setBackground(colores.getSoundPanel());
-        
+
+        // Inicializa la fuente
+        fuente = new Fuente();
+
         // Inicializando las imagenes
         iimute = new ImageIcon("src/img/btn_mute.png");
         iimute_pressed = new ImageIcon("src/img/btn_mute_pressed.png");
@@ -44,7 +49,7 @@ public class SoundPanel extends JPanel{
         iiselected_none = new ImageIcon("src/img/btn_selected_none.png");
         iisound = new ImageIcon("src/img/btn_sound.png");
         iisound_pressed = new ImageIcon("src/img/btn_sound_pressed.png");
-        
+
         // Inicializando botones
         btnmute = new JToggleButton(iimute);
         btnmute.setSelectedIcon(iimute_pressed);
@@ -59,31 +64,30 @@ public class SoundPanel extends JPanel{
         btnsolo = new JToggleButton(iisolo);
         btnsolo.setSelectedIcon(iisolo_pressed);
         btnsolo.setBorder(null);
-        btnsound = new JToggleButton(iisound);
-        btnsound.setSelectedIcon(iisound_pressed);
-        btnsound.setBorder(null);
+        btnSound = new BtnSound(iisound, iisound_pressed, nombre);
         btnselected = new JToggleButton(iiselected_none);
         btnselected.setSelectedIcon(iiselected);
         btnselected.setBorder(null);
-        
+
         // Posiciona los botones
-        btnsolo.setBounds(10, 40, 20, 20);
+        btnsolo.setBounds(20, 40, 20, 20);
         btnmute.setBounds(40, 40, 20, 20);
-        btnsound.setBounds(140, 35, 85, 30);
+        btnSound.setBounds(140, 35, 85, 30);
         btnselected.setBounds(230, 40, 20, 20);
-        for (int i = 0, j = 0; i < btnpatron.length; i++, j+=15) {
-            btnpatron[i].setBounds(250+j, 40, 15, 20);
+        for (int i = 0, j = 0; i < btnpatron.length; i++, j += 15) {
+            btnpatron[i].setBounds(250 + j, 40, 15, 20);
         }
-        
+
         // Añade elementos
+        this.add(btnSound);
         this.add(btnsolo);
         this.add(btnmute);
-        this.add(btnsound);
+
         this.add(btnselected);
         for (int i = 0; i < btnpatron.length; i++) {
             this.add(btnpatron[i]);
         }
-        
+
     }
-    
+
 }
