@@ -2,8 +2,11 @@ package secciones;
 
 import botones.BtnSound;
 import colores.Colores;
+import extra.Pan;
+import extra.Vol;
 import font.Fuente;
 import java.awt.FontFormatException;
+import java.awt.Graphics;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -22,6 +25,8 @@ public class SoundPanel extends JPanel {
     private Colores colores;
     private Fuente fuente;
     private BtnSound btnSound;
+    private Vol volumen;
+    private Pan paneo;
 
     public SoundPanel(String nombre) throws FontFormatException, IOException {
         this.nombre = nombre;
@@ -68,6 +73,12 @@ public class SoundPanel extends JPanel {
         btnselected = new JToggleButton(iiselected_none);
         btnselected.setSelectedIcon(iiselected);
         btnselected.setBorder(null);
+        
+        // Inicializa volumen
+        volumen = new Vol();
+        
+        // Inicializa paneo
+        paneo = new Pan();
 
         // Posiciona los botones
         btnsolo.setBounds(20, 40, 20, 20);
@@ -77,17 +88,21 @@ public class SoundPanel extends JPanel {
         for (int i = 0, j = 0; i < btnpatron.length; i++, j += 15) {
             btnpatron[i].setBounds(250 + j, 40, 15, 20);
         }
+        
+        // Posiciona vol y pan
+        volumen.setLocation(75, 30);
+        paneo.setLocation(75, 60);
 
         // Añade elementos
         this.add(btnSound);
         this.add(btnsolo);
         this.add(btnmute);
-
+        this.add(volumen);
+        this.add(paneo);
         this.add(btnselected);
         for (int i = 0; i < btnpatron.length; i++) {
             this.add(btnpatron[i]);
         }
 
     }
-
 }

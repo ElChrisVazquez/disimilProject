@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/TheCh/Documents/NetBeansProjects/disimilProject/src/botones/BtnSound.java</file>
-            <file>file:/C:/Users/TheCh/Documents/NetBeansProjects/disimilProject/src/secciones/PrincipalPanel.java</file>
-            <file>file:/C:/Users/TheCh/Documents/NetBeansProjects/disimilProject/src/interfaz/Interfaz.java</file>
-            <file>file:/C:/Users/TheCh/Documents/NetBeansProjects/disimilProject/src/secciones/SoundPanel.java</file>
+            <file>file:/home/thechrisvazquez/disimilProject/src/extra/Pan.java</file>
+            <file>file:/home/thechrisvazquez/disimilProject/src/interfaz/Interfaz.java</file>
+            <file>file:/home/thechrisvazquez/disimilProject/src/secciones/SoundPanel.java</file>
+            <file>file:/home/thechrisvazquez/disimilProject/src/extra/Vol.java</file>
         </group>
     </open-files>
 </project-private>
