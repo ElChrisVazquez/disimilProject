@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.TimerTask;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -44,12 +43,6 @@ public class Vol extends JPanel {
         });
         this.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-
-            }
-
-            @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 pos_clicked = (int) MouseInfo.getPointerInfo().getLocation().getX();
@@ -58,7 +51,7 @@ public class Vol extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                super.mouseReleased(e); //To change body of generated methods, choose Tools | Templates.
+                super.mouseReleased(e);
                 timer.stop();
             }
 

@@ -1,12 +1,19 @@
 package secciones;
 
+import colores.Colores;
+import font.Fuente;
+import java.awt.FontFormatException;
+import java.awt.MouseInfo;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
+import javax.swing.Timer;
 
 public class Controlbar extends JPanel {
 
@@ -18,11 +25,28 @@ public class Controlbar extends JPanel {
     private JButton btnnuevo, btnabrir, btnguardar, btnplay, btnstop, btnmetro,
             btnloop;
     private boolean btnplay_status;
-    private JLabel lbhelp, lbtime, lbbmp;
+    private JLabel lbhelp, lbtime, lbbmp, lbvalor_bpm, lbvalor_tiempo;
+    private double bpm, tiempo;
+    private Fuente fuente;
+    private Colores colores;
+    private Timer timerbpm;
+    private int bpm_pressed, bpm_clicked;
 
-    public Controlbar() {
+    public Controlbar() throws FontFormatException, IOException {
         this.setSize(ancho, alto);
         this.setLayout(null);
+        
+        // Inicializa nativas
+        bpm = 120.00;
+        tiempo = 0;
+        bpm_clicked = 0;
+        bpm_pressed = 0;
+        
+        // Inicializa colores
+        colores = new Colores();
+        
+        // Inicializa fuente
+        fuente = new Fuente();
 
         // Inicializa imagenes
         iinuevo = new ImageIcon("src/img/btn_nuevo.png");
@@ -45,7 +69,13 @@ public class Controlbar extends JPanel {
         // Inicializa label
         lbhelp =  new JLabel(iihelp);
         lbtime = new JLabel(iitime);
+        lbvalor_tiempo = new JLabel(String.format("%.02f", tiempo));
+        lbvalor_tiempo.setFont(fuente.getFontbpm());
+        lbvalor_tiempo.setForeground(colores.getTextColor());
         lbbmp = new JLabel(iitime);
+        lbvalor_bpm = new JLabel(String.format("%.02f", bpm));
+        lbvalor_bpm.setFont(fuente.getFontbpm());
+        lbvalor_bpm.setForeground(colores.getTextColor());
 
         // Estado del botpon de play
         btnplay_status = false;
@@ -77,10 +107,34 @@ public class Controlbar extends JPanel {
         btnstop.setBounds(285, 0, 45, 35);
 
         lbtime.setBounds(330, 0, 80, 35);
+        
+        lbvalor_tiempo.setBounds(360, 0, 80, 35);
+        
         lbbmp.setBounds(410, 0, 80, 35);
+        
+        lbvalor_bpm.setBounds(420, 0, 80, 35);
 
         btnmetro.setBounds(490, 0, 30, 35);
+        
         btnloop.setBounds(520, 0, 30, 35);
+        
+        // Creación de timer
+        timerbpm = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                bpm_pressed =  (int) MouseInfo.getPointerInfo().getLocation().getY();
+                if(bpm_clicked>bpm_pressed){
+                    if(bpm<141){
+                        bpm++;
+                    }
+                }else{
+                    if(bpm>49){
+                        bpm--;
+                    }
+                }
+                lbvalor_bpm.setText(String.format("%.02f", bpm));
+            }
+        });
 
         // Crea eventos hover
         btnnuevo.addMouseListener(new MouseAdapter() {
@@ -185,11 +239,34 @@ public class Controlbar extends JPanel {
                 btnloop.setIcon(iiloop);
             }
         });
+        
+        
+        
+        
+        // Crea evento bpm
+        lbbmp.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                bpm_clicked =  (int) MouseInfo.getPointerInfo().getLocation().getY();
+                timerbpm.start();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                timerbpm.stop();
+            }
+            
+            
+        });
 
         // Agrega los componenetes
         this.add(btnloop);
         this.add(btnmetro);
+        this.add(lbvalor_bpm);
         this.add(lbbmp);
+        this.add(lbvalor_tiempo);
         this.add(lbtime);
         this.add(btnstop);
         this.add(btnplay);

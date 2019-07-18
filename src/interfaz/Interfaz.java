@@ -63,7 +63,7 @@ public class Interfaz extends JFrame {
         treepanel.setLocation(4, titlebar.getHeight());
         
         // Inicializa el panel principal
-        principal = new PrincipalPanel(500);
+        principal = new PrincipalPanel();
         principal.setLocation(treepanel.getWidth()+4, titlebar.getHeight());
 
         this.add(principal);

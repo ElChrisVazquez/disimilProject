@@ -6,7 +6,6 @@ import extra.Pan;
 import extra.Vol;
 import font.Fuente;
 import java.awt.FontFormatException;
-import java.awt.Graphics;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;

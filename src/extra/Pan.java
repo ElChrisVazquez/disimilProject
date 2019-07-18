@@ -2,17 +2,67 @@ package extra;
 
 import colores.Colores;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class Pan extends JPanel{
     private final int ancho = 52;
     private final int alto = 12;
     private Colores colores;
+    private int valori, valord, pos_clicked, pos_pressed;
+    private Timer timer;
 
     public Pan() {
         this.setSize(ancho, alto);
         colores = new Colores();
         this.setBackground(colores.getSoundPanel());
+        valori = 25;
+        valord = 0;
+        pos_clicked = 0;
+        pos_pressed = 0;
+        timer = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pos_pressed = (int) MouseInfo.getPointerInfo().getLocation().getX();
+                if (pos_clicked > pos_pressed) {
+                    if(valori>0){
+                        valori-=2;
+                    }
+                    if(valord>-25){
+                        valord-=2;
+                    }
+                }else{
+                    if(valori<50){
+                        valori+=2;
+                    }
+                    if(valord<25){
+                        valord+=2;
+                    }
+                }
+                System.out.println(valord);
+                repaint();
+            }
+        });
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                pos_clicked = (int) MouseInfo.getPointerInfo().getLocation().getX();
+                timer.start();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                timer.stop();
+            }
+
+        });
     }
     @Override
     protected void paintComponent(Graphics g) {
@@ -20,10 +70,10 @@ public class Pan extends JPanel{
         g.setColor(colores.getVolPan());
        
         //Dibuja el pan primer modulo
-        g.drawRect(0, 0, 25, 10);
+        g.drawRect(0, 0, valori, 10);
         
         // Dibuja el pan segundo modulo
-        g.drawRect(25, 0, 25, 10);
+        g.drawRect(valord+25, 0, 25-valord, 10);
         
     }
     

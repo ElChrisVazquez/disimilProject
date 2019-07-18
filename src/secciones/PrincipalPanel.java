@@ -12,7 +12,7 @@ import javax.swing.border.EmptyBorder;
 public class PrincipalPanel extends JPanel {
 
     private final int ancho = 540;
-    private int alto;
+    private final int alto = 100;
     private JScrollPane jspcaja;
     private Colores colores;
     private ArrayList<SoundPanel> splista;
@@ -20,8 +20,7 @@ public class PrincipalPanel extends JPanel {
     private JPanel jpinterno;
     private BoxLayout boxLayout;
 
-    public PrincipalPanel(int alto) throws FontFormatException, IOException {
-        this.alto = alto;
+    public PrincipalPanel() throws FontFormatException, IOException {
         this.setSize(ancho, alto);
         this.setLayout(null);
 
@@ -46,7 +45,6 @@ public class PrincipalPanel extends JPanel {
 
         splista = new ArrayList<>();
 
-        create("", "lorem impsum lorem");
 
         if (!splista.isEmpty()) {
             splista.forEach((sound) -> jpinterno.add(sound));

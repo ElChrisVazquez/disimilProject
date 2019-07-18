@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Fuente {
     
-    private Font font;
+    private Font font, fontbpm;
 
     /**
      * Crea fuente base
@@ -15,8 +15,8 @@ public class Fuente {
      * @throws IOException 
      */
     public Fuente() throws FontFormatException, IOException {
-        this.font = font;
         font = Font.createFont(Font.TRUETYPE_FONT, new File("src/font/uni.ttf")).deriveFont(10f);
+        fontbpm = Font.createFont(Font.TRUETYPE_FONT, new File("src/font/uni.ttf")).deriveFont(16f);
     }
 
     /**
@@ -26,4 +26,9 @@ public class Fuente {
     public Font getFont() {
         return font;
     }
+
+    public Font getFontbpm() {
+        return fontbpm;
+    }
+    
 }
