@@ -2,9 +2,14 @@ package extra;
 
 import colores.Colores;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.TimerTask;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class Vol extends JPanel {
 
@@ -12,28 +17,53 @@ public class Vol extends JPanel {
     private final int alto = 12;
     private Colores colores;
     private int valor, pos_clicked, pos_pressed;
+    private Timer timer;
 
     public Vol() {
         this.setSize(ancho, alto);
         colores = new Colores();
         this.setBackground(colores.getSoundPanel());
-        valor = 0;
+        valor = 100;
         pos_clicked = 0;
         pos_pressed = 0;
+        timer = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pos_pressed = (int) MouseInfo.getPointerInfo().getLocation().getX();
+                if (pos_clicked > pos_pressed) {
+                    if (valor > 0) {
+                        valor-=2;
+                    }
+                } else {
+                    if (valor < 101) {
+                        valor+=2;
+                    }
+                }
+                repaint();
+            }
+        });
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                pos_clicked = e.getX();
+
             }
-            
+
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                
+                pos_clicked = (int) MouseInfo.getPointerInfo().getLocation().getX();
+                timer.start();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e); //To change body of generated methods, choose Tools | Templates.
+                timer.stop();
             }
 
         });
+
     }
 
     @Override
@@ -43,7 +73,7 @@ public class Vol extends JPanel {
 
         // Dibuja el volumen
         g.drawRect(0, 0, 50, 10);
-        g.fillRect(0, 0, 40, 10);
+        g.fillRect(0, 0, (int)valor/2, 10);
     }
 
 }

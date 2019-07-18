@@ -35,7 +35,7 @@ public class Interfaz extends JFrame {
         this.setLocationRelativeTo(null);
         this.setLayout(null);
 //        this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-        this.setUndecorated(true);
+//        this.setUndecorated(true);
 
         //inicializa  clase colores
         colores = new Colores();
