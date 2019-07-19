@@ -2,6 +2,7 @@ package secciones;
 
 import colores.Colores;
 import font.Fuente;
+import java.awt.Color;
 import java.awt.FontFormatException;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
@@ -71,11 +72,11 @@ public class Controlbar extends JPanel {
         lbtime = new JLabel(iitime);
         lbvalor_tiempo = new JLabel(String.format("%.02f", tiempo));
         lbvalor_tiempo.setFont(fuente.getFontbpm());
-        lbvalor_tiempo.setForeground(colores.getTextColor());
+        lbvalor_tiempo.setForeground(Color.white);
         lbbmp = new JLabel(iitime);
         lbvalor_bpm = new JLabel(String.format("%.02f", bpm));
         lbvalor_bpm.setFont(fuente.getFontbpm());
-        lbvalor_bpm.setForeground(colores.getTextColor());
+        lbvalor_bpm.setForeground(Color.white);
 
         // Estado del botpon de play
         btnplay_status = false;
