@@ -32,10 +32,6 @@ public class TreePanel extends JPanel {
         return ancho;
     }
 
-    public Colores getColores() {
-        return colores;
-    }
-
     // Retorna el objeto jtree
     public JTree getArbol() {
         return arbol.getArbol();
