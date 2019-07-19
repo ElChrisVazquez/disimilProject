@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import colores.Colores;// Importa clase de colores
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -17,6 +19,7 @@ import javax.swing.Timer;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
+import javax.tools.DocumentationTool;
 import secciones.Controlbar;
 import secciones.PrincipalPanel;
 import secciones.SoundPanel;
@@ -46,7 +49,7 @@ public class Interfaz extends JFrame {
         this.setLocationRelativeTo(null);
         this.setLayout(null);
 //        this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-//        this.setUndecorated(true);
+        this.setUndecorated(true);
 
         // Se inicializa el file que guarda la seleccion del arbol
         file_selected_tree = null;
@@ -65,7 +68,7 @@ public class Interfaz extends JFrame {
         iiminipanel = new ImageIcon("src/img/mini.png");
 
         // Inicializa label para animación
-        lbminipanel = new JLabel(iilogo);
+        lbminipanel = new JLabel(iiminipanel);
         lbminipanel.setBounds(0, 0, 100, 15);
         lbminipanel.setVisible(false); // Se oculta al inicializar
 
@@ -93,27 +96,12 @@ public class Interfaz extends JFrame {
         timer_minipanel = new Timer(1, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
-        // Seleccion de arbol
-        treepanel.getArbol().addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent tse) {
-                TreePath tp = treepanel.getArbol().getSelectionPath();
-                if (tp != null) {
-                    Object filePathToAdd = tp.getLastPathComponent();
-                    if (filePathToAdd instanceof File) {
-                        File node = (File) filePathToAdd;
-                        System.out.println(node.getAbsolutePath());
-//                        if (node.isFile() && node.getPath().endsWith(".wav")) {
-//                            System.out.println(node.getPath());
-//                            arbol.getArbol().clearSelection();
-//                        } else if (node.isDirectory()) {
-//                        }
-                    }
-                }
+                Point location_mini = MouseInfo.getPointerInfo().getLocation();
+                lbminipanel.setLocation((int)(location_mini.getX()-getX()), (int)(location_mini.getY()-getY()));
+                lbminipanel.setVisible(true);
+                System.out.println((int)(location_mini.getX()-getX())+" ");
+                System.out.print((int)(location_mini.getY()-getY()));
+                lbminipanel.repaint();
             }
         });
 
@@ -121,22 +109,37 @@ public class Interfaz extends JFrame {
         treepanel.getArbol().addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                int selRow = treepanel.getArbol().getRowForLocation(e.getX(), e.getY());
-                TreePath selPath = treepanel.getArbol().getPathForLocation(e.getX(), e.getY());
-                treepanel.getArbol().setSelectionPath(selPath);
-                if (selRow > -1) {
-                    treepanel.getArbol().setSelectionRow(selRow);
+                TreePath tp = treepanel.getArbol().getSelectionPath();
+                if (tp != null) {
+                    Object filePathToAdd = tp.getLastPathComponent();
+                    if (filePathToAdd instanceof File) {
+                        File node = (File) filePathToAdd;
+                        if(node.isFile()){
+                            timer_minipanel.start();
+                            lbminipanel.setVisible(true);
+                        }
+                    }
                 }
             }
 
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                timer_minipanel.stop();
+                lbminipanel.setVisible(false);
+                lbminipanel.setLocation(0, 0);
+                treepanel.getArbol().clearSelection();
+            }
         });
 
+        
+        this.add(lbminipanel);
         this.add(principal);
         this.add(treepanel);
         this.add(lblogo);
         this.add(controlbar);
         this.add(titlebar);
-        this.add(lbminipanel);
+        
+        
 
         setVisible(true);
     }
