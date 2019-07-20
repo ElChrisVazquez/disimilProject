@@ -6,7 +6,13 @@ import extra.Pan;
 import extra.Vol;
 import font.Fuente;
 import java.awt.FontFormatException;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -20,6 +26,7 @@ public class SoundPanel extends JPanel {
             iiselected, iiselected_none;
     private JToggleButton[] btnpatron;
     private JToggleButton btnselected, btnmute, btnsolo;
+    private File sound;
     private String nombre;
     private Colores colores;
     private Fuente fuente;
@@ -27,7 +34,8 @@ public class SoundPanel extends JPanel {
     private Vol volumen;
     private Pan paneo;
 
-    public SoundPanel(String nombre) throws FontFormatException, IOException {
+    public SoundPanel(File sound, String nombre) throws FontFormatException, IOException {
+        this.sound = sound;
         this.nombre = nombre;
         this.setSize(ancho, alto);
         this.setLayout(null);
@@ -91,6 +99,9 @@ public class SoundPanel extends JPanel {
         // Posiciona vol y pan
         volumen.setLocation(75, 30);
         paneo.setLocation(75, 60);
+        
+        //Crea borde
+        this.setBorder(BorderFactory.createMatteBorder(5, 0, 0, 5, colores.getBackPanel()));
 
         // Añade elementos
         this.add(btnSound);

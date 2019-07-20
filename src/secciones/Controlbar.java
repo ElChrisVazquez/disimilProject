@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.Timer;
 
 public class Controlbar extends JPanel {
@@ -22,9 +23,9 @@ public class Controlbar extends JPanel {
     private final int ancho = 550;
     private ImageIcon iinuevo, iinuevo_hover, iiabrir, iiabrir_hover, iiguardar,
             iiguardar_hover, iihelp, iiplay, iiplay_hover, iistop, iistop_hover,
-            iitime, iimetro, iimetro_hover, iiloop, iiloop_hover;
-    private JButton btnnuevo, btnabrir, btnguardar, btnplay, btnstop, btnmetro,
-            btnloop;
+            iitime, iimetro, iimetro_selected, iiloop, iiloop_selected;
+    private JButton btnnuevo, btnabrir, btnguardar, btnplay, btnstop;
+    private JToggleButton btnmetro, btnloop;
     private boolean btnplay_status;
     private JLabel lbhelp, lbtime, lbbmp, lbvalor_bpm, lbvalor_tiempo;
     private double bpm, tiempo;
@@ -36,16 +37,16 @@ public class Controlbar extends JPanel {
     public Controlbar() throws FontFormatException, IOException {
         this.setSize(ancho, alto);
         this.setLayout(null);
-        
+
         // Inicializa nativas
         bpm = 120.00;
         tiempo = 0;
         bpm_clicked = 0;
         bpm_pressed = 0;
-        
+
         // Inicializa colores
         colores = new Colores();
-        
+
         // Inicializa fuente
         fuente = new Fuente();
 
@@ -56,19 +57,19 @@ public class Controlbar extends JPanel {
         iiabrir_hover = new ImageIcon("src/img/btn_abrir_hover.png");
         iiguardar = new ImageIcon("src/img/btn_guardar.png");
         iiguardar_hover = new ImageIcon("src/img/btn_guardar_hover.png");
-        iihelp  = new ImageIcon("src/img/barra_help.png");
+        iihelp = new ImageIcon("src/img/barra_help.png");
         iiplay = new ImageIcon("src/img/btn_play.png");
         iiplay_hover = new ImageIcon("src/img/btn_play_hover.png");
         iistop = new ImageIcon("src/img/btn_stop.png");
         iistop_hover = new ImageIcon("src/img/btn_stop_hover.png");
         iitime = new ImageIcon("src/img/barra_time.png");
         iimetro = new ImageIcon("src/img/btn_metro.png");
-        iimetro_hover = new ImageIcon("src/img/btn_metro_hover.png");
+        iimetro_selected = new ImageIcon("src/img/btn_metro_selected.png");
         iiloop = new ImageIcon("src/img/btn_loop.png");
-        iiloop_hover = new ImageIcon("src/img/btn_loop_hover.png");
+        iiloop_selected = new ImageIcon("src/img/btn_loop_selected.png");
 
         // Inicializa label
-        lbhelp =  new JLabel(iihelp);
+        lbhelp = new JLabel(iihelp);
         lbtime = new JLabel(iitime);
         lbvalor_tiempo = new JLabel(String.format("%.02f", tiempo));
         lbvalor_tiempo.setFont(fuente.getFontbpm());
@@ -92,44 +93,46 @@ public class Controlbar extends JPanel {
         btnplay.setBorder(null);
         btnstop = new JButton(iistop);
         btnstop.setBorder(null);
-        btnmetro = new JButton(iimetro);
+        btnmetro = new JToggleButton(iimetro);
+        btnmetro.setSelectedIcon(iimetro_selected);
         btnmetro.setBorder(null);
-        btnloop = new JButton(iiloop);
+        btnloop = new JToggleButton(iiloop);
+        btnloop.setSelectedIcon(iiloop_selected);
         btnloop.setBorder(null);
 
         // Asigna tamaño, y posicion de botones
         btnnuevo.setBounds(0, 0, 30, 35);
         btnabrir.setBounds(30, 0, 30, 35);
         btnguardar.setBounds(60, 0, 30, 35);
-        
+
         lbhelp.setBounds(90, 0, 140, 35);
-        
+
         btnplay.setBounds(230, 0, 55, 35);
         btnstop.setBounds(285, 0, 45, 35);
 
         lbtime.setBounds(330, 0, 80, 35);
-        
+
         lbvalor_tiempo.setBounds(360, 0, 80, 35);
-        
+
         lbbmp.setBounds(410, 0, 80, 35);
-        
+
         lbvalor_bpm.setBounds(420, 0, 80, 35);
 
         btnmetro.setBounds(490, 0, 30, 35);
-        
+
         btnloop.setBounds(520, 0, 30, 35);
-        
+
         // Creación de timer
         timerbpm = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                bpm_pressed =  (int) MouseInfo.getPointerInfo().getLocation().getY();
-                if(bpm_clicked>bpm_pressed){
-                    if(bpm<141){
+                bpm_pressed = (int) MouseInfo.getPointerInfo().getLocation().getY();
+                if (bpm_clicked > bpm_pressed) {
+                    if (bpm < 141) {
                         bpm++;
                     }
-                }else{
-                    if(bpm>49){
+                } else {
+                    if (bpm > 49) {
                         bpm--;
                     }
                 }
@@ -217,39 +220,12 @@ public class Controlbar extends JPanel {
 
         });
 
-        btnmetro.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                btnmetro.setIcon(iimetro_hover);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                btnmetro.setIcon(iimetro);
-            }
-        });
-
-        btnloop.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                btnloop.setIcon(iiloop_hover);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                btnloop.setIcon(iiloop);
-            }
-        });
-        
-        
-        
-        
         // Crea evento bpm
         lbbmp.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                bpm_clicked =  (int) MouseInfo.getPointerInfo().getLocation().getY();
+                bpm_clicked = (int) MouseInfo.getPointerInfo().getLocation().getY();
                 timerbpm.start();
             }
 
@@ -258,8 +234,7 @@ public class Controlbar extends JPanel {
                 super.mouseReleased(e);
                 timerbpm.stop();
             }
-            
-            
+
         });
 
         // Agrega los componenetes
@@ -277,4 +252,7 @@ public class Controlbar extends JPanel {
         this.add(btnnuevo);
     }
 
+    public double getBpm() {
+        return bpm;
+    }
 }

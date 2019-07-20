@@ -2,6 +2,7 @@ package secciones;
 
 import colores.Colores;
 import java.awt.FontFormatException;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
@@ -12,7 +13,9 @@ import javax.swing.border.EmptyBorder;
 public class PrincipalPanel extends JPanel {
 
     private final int ancho = 540;
-    private final int alto = 100;
+    private final int boxsize = 120;
+    private final int boxempty = 55;
+    private int alto, max_size;
     private JScrollPane jspcaja;
     private Colores colores;
     private ArrayList<SoundPanel> splista;
@@ -20,7 +23,9 @@ public class PrincipalPanel extends JPanel {
     private JPanel jpinterno;
     private BoxLayout boxLayout;
 
-    public PrincipalPanel() throws FontFormatException, IOException {
+    public PrincipalPanel(int max_size) throws FontFormatException, IOException {
+        this.max_size = max_size;
+        alto = boxempty;
         this.setSize(ancho, alto);
         this.setLayout(null);
 
@@ -30,9 +35,9 @@ public class PrincipalPanel extends JPanel {
 
         // Inicializa panel interno
         jpinterno = new JPanel();
-        jpinterno.setSize(540, 120);
+        jpinterno.setSize(ancho, alto);
         jpinterno.setBackground(colores.getBackPanel());
-        boxLayout = new BoxLayout(jpinterno, BoxLayout.X_AXIS);
+        boxLayout = new BoxLayout(jpinterno, BoxLayout.Y_AXIS);
         jpinterno.setLayout(boxLayout);
         jpinterno.setBorder(new EmptyBorder(10, 20, 10, 20));
 
@@ -43,19 +48,47 @@ public class PrincipalPanel extends JPanel {
         jspcaja.setBorder(null);
         jspcaja.setBackground(colores.getBackPanel());
 
+        // Inicializa la lista de sonidos
         splista = new ArrayList<>();
-
-
-        if (!splista.isEmpty()) {
-            splista.forEach((sound) -> jpinterno.add(sound));
-        }
 
         jspcaja.add(jpinterno);
         this.add(jspcaja);
     }
 
-    public void create(String path, String name) throws FontFormatException, IOException {
-        sounPanel = new SoundPanel(name);
+    public void create(File sound, String nombre) throws FontFormatException, IOException {
+        sounPanel = new SoundPanel(sound, nombre);
         splista.add(sounPanel);
+        refresh();
     }
+
+    public void refresh() {
+        if (!splista.isEmpty()) {
+            splista.forEach((sound) -> jpinterno.add(sound));
+            alto = boxsize * splista.size();
+            setSize(ancho, alto);
+            jpinterno.setSize(ancho, alto);
+            jspcaja.setSize(ancho, alto);
+            System.out.println(alto);
+            repaint();
+        }
+    }
+
+    /**
+     * La altura vuelve a 55
+     * Limpia la lista
+     * Establece altura de los componentes internos.
+     */
+    public void deleteAll() {
+        alto = boxempty;
+        splista.removeAll(splista);
+        setSize(ancho, alto);
+        jpinterno.setSize(ancho, alto);
+        jspcaja.setSize(ancho, alto);
+    }
+
+    public ArrayList<SoundPanel> getSplista() {
+        return splista;
+    }
+    
+    
 }

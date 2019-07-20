@@ -10,16 +10,23 @@ import javax.swing.JLabel;
 import colores.Colores;// Importa clase de colores
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JButton;
 import javax.swing.Timer;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
-import javax.tools.DocumentationTool;
 import secciones.Controlbar;
 import secciones.PrincipalPanel;
 import secciones.SoundPanel;
@@ -29,8 +36,8 @@ import secciones.TreePanel; // Importa el panel de arbol
 public class Interfaz extends JFrame {
 
     private final int ancho = 1000;
-    private final int alto = 768;
-    private File file_selected_tree, file_click_pressed;
+    private final int alto = 500;
+    private File file_selected;
 
     private Colores colores;
     private ImageIcon iilogo, iiminipanel;
@@ -52,8 +59,7 @@ public class Interfaz extends JFrame {
         this.setUndecorated(true);
 
         // Se inicializa el file que guarda la seleccion del arbol
-        file_selected_tree = null;
-        file_click_pressed = null;
+        file_selected = null;
 
         //inicializa  clase colores
         colores = new Colores();
@@ -65,11 +71,11 @@ public class Interfaz extends JFrame {
         iilogo = new ImageIcon("src/img/logo.png");
 
         // Carga imagen para animacion
-        iiminipanel = new ImageIcon("src/img/mini.png");
+        iiminipanel = new ImageIcon("src/img/mini2.png");
 
         // Inicializa label para animación
         lbminipanel = new JLabel(iiminipanel);
-        lbminipanel.setBounds(0, 0, 100, 15);
+        lbminipanel.setBounds(0, 0, 75, 15);
         lbminipanel.setVisible(false); // Se oculta al inicializar
 
         // Inicializa logotipo
@@ -89,18 +95,19 @@ public class Interfaz extends JFrame {
         treepanel.setLocation(4, titlebar.getHeight());
 
         // Inicializa el panel principal
-        principal = new PrincipalPanel();
+        principal = new PrincipalPanel(alto);
         principal.setLocation(treepanel.getWidth() + 4, titlebar.getHeight());
 
         // Crea animación de drop&drag
-        timer_minipanel = new Timer(1, new ActionListener() {
+        timer_minipanel = new Timer(35, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Point location_mini = MouseInfo.getPointerInfo().getLocation();
-                lbminipanel.setLocation((int)(location_mini.getX()-getX()), (int)(location_mini.getY()-getY()));
+                lbminipanel.setLocation(
+                        (int) (location_mini.getX() - getX()),
+                        (int) (location_mini.getY() - getY())
+                );
                 lbminipanel.setVisible(true);
-                System.out.println((int)(location_mini.getX()-getX())+" ");
-                System.out.print((int)(location_mini.getY()-getY()));
                 lbminipanel.repaint();
             }
         });
@@ -114,9 +121,11 @@ public class Interfaz extends JFrame {
                     Object filePathToAdd = tp.getLastPathComponent();
                     if (filePathToAdd instanceof File) {
                         File node = (File) filePathToAdd;
-                        if(node.isFile()){
+                        if (node.isFile() && node.getPath().endsWith(".wav")) {
+                            file_selected = node;
                             timer_minipanel.start();
                             lbminipanel.setVisible(true);
+                            playSamplePreview(node);
                         }
                     }
                 }
@@ -124,24 +133,71 @@ public class Interfaz extends JFrame {
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                Rectangle rec_pointer = new Rectangle(
+                        (int) (MouseInfo.getPointerInfo().getLocation().getX() - getX()),
+                        (int) (MouseInfo.getPointerInfo().getLocation().getY() - getY()),
+                        1,
+                        1);
+                Rectangle rec_panel = new Rectangle(principal.getBounds());
                 timer_minipanel.stop();
                 lbminipanel.setVisible(false);
-                lbminipanel.setLocation(0, 0);
                 treepanel.getArbol().clearSelection();
+                if (rec_pointer.intersects(rec_panel) && file_selected != null) {
+                    try {
+                        principal.create(
+                                file_selected,
+                                file_selected.getName()
+                        );
+                    } catch (FontFormatException ex) {
+                        Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    file_selected = null;
+                }
             }
         });
 
-        
         this.add(lbminipanel);
         this.add(principal);
         this.add(treepanel);
         this.add(lblogo);
         this.add(controlbar);
         this.add(titlebar);
-        
-        
 
         setVisible(true);
+    }
+
+    public void playSample(File sound) {
+        try {
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(sound));
+            FloatControl gain_control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gain_control.setValue(0);
+            clip.start();
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException exc) {
+            exc.printStackTrace(System.out);
+        }
+    }
+
+    public void playSamplePreview(File sound) {
+        try {
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(sound));
+            FloatControl gain_control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gain_control.setValue(0.0f);
+            clip.start();
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException exc) {
+            exc.printStackTrace(System.out);
+        }
+    }
+    
+    public void play(ArrayList<SoundPanel> splista, int bpm, boolean metro, boolean loop){
+        
+    }
+    
+    public static void idiota(){
+        System.out.println("Soy una verga");
     }
 
     public static void main(String[] args) throws HeadlessException, FontFormatException, IOException {

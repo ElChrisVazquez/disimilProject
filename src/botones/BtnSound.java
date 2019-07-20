@@ -5,6 +5,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 
 public class BtnSound extends JToggleButton {
 
@@ -23,7 +24,7 @@ public class BtnSound extends JToggleButton {
         // Inicializa colores
         colores = new Colores();
         
-        lbnombre = new JLabel(nombre);
+        lbnombre = new JLabel(nombre, SwingConstants.CENTER);
         lbnombre.setBounds(8, 0, 70, 30);
         lbnombre.setForeground(colores.getTextColor());
         
