@@ -14,7 +14,7 @@ public class Pan extends JPanel{
     private final int ancho = 52;
     private final int alto = 12;
     private Colores colores;
-    private int valori, valord, pos_clicked, pos_pressed;
+    private int valor, valori, valord, pos_clicked, pos_pressed;
     private Timer timer;
 
     public Pan() {
@@ -23,6 +23,7 @@ public class Pan extends JPanel{
         this.setBackground(colores.getSoundPanel());
         valori = 25;
         valord = 0;
+        valor = 0;
         pos_clicked = 0;
         pos_pressed = 0;
         timer = new Timer(100, new ActionListener() {
@@ -76,7 +77,9 @@ public class Pan extends JPanel{
         g.drawRect(valord+25, 0, 25-valord, 10);
         
     }
-    
-    
+
+    public int getValor() {
+        return valor;
+    }
     
 }

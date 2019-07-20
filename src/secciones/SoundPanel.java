@@ -113,6 +113,22 @@ public class SoundPanel extends JPanel {
         for (int i = 0; i < btnpatron.length; i++) {
             this.add(btnpatron[i]);
         }
-
     }
+
+    public JToggleButton[] getBtnpatron() {
+        return btnpatron;
+    }
+
+    public File getSound() {
+        return sound;
+    }
+
+    public Vol getVolumen() {
+        return volumen;
+    }
+
+    public Pan getPaneo() {
+        return paneo;
+    }
+    
 }

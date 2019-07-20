@@ -255,4 +255,37 @@ public class Controlbar extends JPanel {
     public double getBpm() {
         return bpm;
     }
+
+    public JToggleButton getBtnmetro() {
+        return btnmetro;
+    }
+
+    public JToggleButton getBtnloop() {
+        return btnloop;
+    }
+
+    public JButton getBtnplay() {
+        return btnplay;
+    }
+
+    public JButton getBtnnuevo() {
+        return btnnuevo;
+    }
+
+    public JButton getBtnabrir() {
+        return btnabrir;
+    }
+
+    public JButton getBtnguardar() {
+        return btnguardar;
+    }
+
+    public JButton getBtnstop() {
+        return btnstop;
+    }
+
+    public boolean isBtnplay_status() {
+        return btnplay_status;
+    }
+
 }

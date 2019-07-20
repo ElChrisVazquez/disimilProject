@@ -37,12 +37,15 @@ public class Interfaz extends JFrame {
 
     private final int ancho = 1000;
     private final int alto = 500;
+    private final double bpm_time = 240.00;
+    private double time_per_sample;
+    private int beat = 0;
     private File file_selected;
 
     private Colores colores;
     private ImageIcon iilogo, iiminipanel;
     private JLabel lblogo, lbminipanel;
-    private Timer timer_minipanel;
+    private Timer timer_minipanel, timer_play;
 
     private Titlebar titlebar;
     private Controlbar controlbar;
@@ -50,13 +53,16 @@ public class Interfaz extends JFrame {
     private PrincipalPanel principal;
     private SoundPanel soundpanel;
 
-    public Interfaz() throws HeadlessException, FontFormatException, IOException {
+    public Interfaz(String path) throws HeadlessException, FontFormatException, IOException {
         this.setSize(ancho, alto);
         this.setDefaultCloseOperation(3);
         this.setLocationRelativeTo(null);
         this.setLayout(null);
 //        this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
         this.setUndecorated(true);
+
+        // Inicializa nativos
+        time_per_sample = 0;
 
         // Se inicializa el file que guarda la seleccion del arbol
         file_selected = null;
@@ -91,7 +97,7 @@ public class Interfaz extends JFrame {
         controlbar.setLocation(4, 55);
 
         // Inicializa el panel del arbol
-        treepanel = new TreePanel(alto, new File("src"));
+        treepanel = new TreePanel(alto, new File(path));
         treepanel.setLocation(4, titlebar.getHeight());
 
         // Inicializa el panel principal
@@ -158,6 +164,55 @@ public class Interfaz extends JFrame {
             }
         });
 
+        timer_play = new Timer(187, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (beat < 16) {
+                    for (int i = 0; i < principal.getSplista().size(); i++) {
+                        if (principal.getSplista().get(i).getBtnpatron()[beat].isSelected()) {
+                            playSample(
+                                    principal.getSplista().get(i).getSound(),
+                                    principal.getSplista().get(i).getVolumen().getValor(),
+                                    principal.getSplista().get(i).getPaneo().getValor());
+                        }
+                        principal.getDesplazamiento()[beat].setBackground(colores.getVolPan());
+                        if(beat == 0){
+                            principal.getDesplazamiento()[15].setBackground(colores.getBackRepro());
+                        }
+                        if(beat>0){
+                            principal.getDesplazamiento()[beat-1].setBackground(colores.getBackRepro());
+                        }
+                    }
+                }
+                beat++;
+                // Si está desactivado el loop se detiene
+                if (beat == 16) {
+                    if (controlbar.getBtnloop().isSelected()) {
+                        beat = 0;
+                    } else {
+                        timer_play.stop();
+                        principal.getDesplazamiento()[beat - 1].setBackground(colores.getBackRepro());
+                    }
+                }
+            }
+        });
+
+        // Actionlistener botón de play
+        controlbar.getBtnplay().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timer_play.start();
+            }
+        });
+
+        // Action listener de boton stop
+        controlbar.getBtnstop().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stop();
+            }
+        });
+
         this.add(lbminipanel);
         this.add(principal);
         this.add(treepanel);
@@ -168,7 +223,7 @@ public class Interfaz extends JFrame {
         setVisible(true);
     }
 
-    public void playSample(File sound) {
+    public void playSample(File sound, int vol, int pan) {
         try {
             Clip clip = AudioSystem.getClip();
             clip.open(AudioSystem.getAudioInputStream(sound));
@@ -191,16 +246,31 @@ public class Interfaz extends JFrame {
             exc.printStackTrace(System.out);
         }
     }
-    
-    public void play(ArrayList<SoundPanel> splista, int bpm, boolean metro, boolean loop){
-        
+
+    // 240s = 1bpm entre 16 botones y en microsegundos
+    public void play(
+            ArrayList<SoundPanel> splista,
+            double bpm,
+            boolean isActivateMetro,
+            boolean isActivateLoop
+    ) {
+        double time_per_sample = ((bpm_time / bpm) / 16) * 1000;
+        if (!splista.isEmpty()) {
+
+            timer_play.start();
+        }
     }
-    
-    public static void idiota(){
-        System.out.println("Soy una verga");
+
+    public void stop() {
+        if (beat > 0) {
+            principal.getDesplazamiento()[beat - 1].setBackground(colores.getBackRepro());
+        }
+        principal.getDesplazamiento()[15].setBackground(colores.getBackRepro());
+        timer_play.stop();
+        beat = 0;
     }
 
     public static void main(String[] args) throws HeadlessException, FontFormatException, IOException {
-        Interfaz interfaz = new Interfaz();
+        Interfaz interfaz = new Interfaz("src");
     }
 }

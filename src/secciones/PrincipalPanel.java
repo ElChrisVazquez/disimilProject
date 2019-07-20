@@ -16,6 +16,9 @@ public class PrincipalPanel extends JPanel {
     private final int boxsize = 120;
     private final int boxempty = 55;
     private int alto, max_size;
+
+    private JPanel[] desplazamiento;
+
     private JScrollPane jspcaja;
     private Colores colores;
     private ArrayList<SoundPanel> splista;
@@ -26,7 +29,7 @@ public class PrincipalPanel extends JPanel {
     public PrincipalPanel(int max_size) throws FontFormatException, IOException {
         this.max_size = max_size;
         alto = boxempty;
-        this.setSize(ancho, alto);
+        this.setSize(ancho, alto + 25);
         this.setLayout(null);
 
         // Inicializa colores
@@ -51,6 +54,15 @@ public class PrincipalPanel extends JPanel {
         // Inicializa la lista de sonidos
         splista = new ArrayList<>();
 
+        // Inicializa los botones de desplazamiento
+        desplazamiento = new JPanel[16];
+        for (int i = 0, j = 0; i < desplazamiento.length; i++, j += 15) {
+            desplazamiento[i] = new JPanel();
+            desplazamiento[i].setBounds(270 + j, alto + 15, 15, 10);
+            desplazamiento[i].setBackground(colores.getBackRepro());
+            this.add(desplazamiento[i]);
+        }
+
         jspcaja.add(jpinterno);
         this.add(jspcaja);
     }
@@ -65,7 +77,7 @@ public class PrincipalPanel extends JPanel {
         if (!splista.isEmpty()) {
             splista.forEach((sound) -> jpinterno.add(sound));
             alto = boxsize * splista.size();
-            setSize(ancho, alto);
+            setSize(ancho, alto + 25);
             jpinterno.setSize(ancho, alto);
             jspcaja.setSize(ancho, alto);
             System.out.println(alto);
@@ -74,9 +86,8 @@ public class PrincipalPanel extends JPanel {
     }
 
     /**
-     * La altura vuelve a 55
-     * Limpia la lista
-     * Establece altura de los componentes internos.
+     * La altura vuelve a 55 Limpia la lista Establece altura de los componentes
+     * internos.
      */
     public void deleteAll() {
         alto = boxempty;
@@ -89,6 +100,11 @@ public class PrincipalPanel extends JPanel {
     public ArrayList<SoundPanel> getSplista() {
         return splista;
     }
+
+    public JPanel[] getDesplazamiento() {
+        return desplazamiento;
+    }
     
     
+
 }

@@ -69,4 +69,7 @@ public class Vol extends JPanel {
         g.fillRect(0, 0, (int)valor/2, 10);
     }
 
+    public int getValor() {
+        return valor;
+    }
 }
