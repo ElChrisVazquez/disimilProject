@@ -24,7 +24,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.tree.TreePath;
 import secciones.Controlbar;
@@ -100,8 +100,8 @@ public class Interfaz extends JFrame {
         treepanel = new TreePanel(alto, new File(path));
         treepanel.setLocation(4, titlebar.getHeight());
 
-        // Inicializa el panel principal
-        principal = new PrincipalPanel(alto);
+        // Inicializa el panel principal 
+        principal = new PrincipalPanel(alto, 0);
         principal.setLocation(treepanel.getWidth() + 4, titlebar.getHeight());
 
         // Crea animación de drop&drag
@@ -176,11 +176,11 @@ public class Interfaz extends JFrame {
                                     principal.getSplista().get(i).getPaneo().getValor());
                         }
                         principal.getDesplazamiento()[beat].setBackground(colores.getVolPan());
-                        if(beat == 0){
+                        if (beat == 0) {
                             principal.getDesplazamiento()[15].setBackground(colores.getBackRepro());
                         }
-                        if(beat>0){
-                            principal.getDesplazamiento()[beat-1].setBackground(colores.getBackRepro());
+                        if (beat > 0) {
+                            principal.getDesplazamiento()[beat - 1].setBackground(colores.getBackRepro());
                         }
                     }
                 }
@@ -212,6 +212,28 @@ public class Interfaz extends JFrame {
                 stop();
             }
         });
+
+        // Action listener de boton nuevo
+        controlbar.getBtnnuevo().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!principal.getSplista().isEmpty()) {
+                    int respuesta = JOptionPane.showConfirmDialog(
+                            null,
+                            "Desea descartar los cambios?",
+                            "Advertencia!",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    if (respuesta == JOptionPane.YES_OPTION) {
+                        principal.deleteAll();
+                    }
+                }
+            }
+        });
+        
+        
+
 
         this.add(lbminipanel);
         this.add(principal);

@@ -14,8 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 
 public class SoundPanel extends JPanel {
 
@@ -33,12 +36,16 @@ public class SoundPanel extends JPanel {
     private BtnSound btnSound;
     private Vol volumen;
     private Pan paneo;
+    
+    private JPopupMenu jpop_menu;
+    private JMenuItem jmielminiar;
 
     public SoundPanel(File sound, String nombre) throws FontFormatException, IOException {
         this.sound = sound;
         this.nombre = nombre;
         this.setSize(ancho, alto);
         this.setLayout(null);
+        this.setName(nombre);
 
         // Inicializa colores
         colores = new Colores();
@@ -86,6 +93,11 @@ public class SoundPanel extends JPanel {
         
         // Inicializa paneo
         paneo = new Pan();
+        
+        // Inicializa popmenu
+        jpop_menu = new JPopupMenu();
+        jmielminiar = new JMenuItem("Eliminar");
+        jpop_menu.add(jmielminiar);
 
         // Posiciona los botones
         btnsolo.setBounds(20, 40, 20, 20);
@@ -102,6 +114,10 @@ public class SoundPanel extends JPanel {
         
         //Crea borde
         this.setBorder(BorderFactory.createMatteBorder(5, 0, 0, 5, colores.getBackPanel()));
+        
+        // Evento mouse Adapter para eliminar
+             
+        
 
         // Añade elementos
         this.add(btnSound);
@@ -130,5 +146,13 @@ public class SoundPanel extends JPanel {
     public Pan getPaneo() {
         return paneo;
     }
-    
+
+    public JMenuItem getJmielminiar() {
+        return jmielminiar;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
