@@ -293,6 +293,12 @@ public class Interfaz extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Reproduce el archivo
+     * @param sound Archivo de sonido
+     * @param vol Volumen
+     * @param pan Paneo
+     */
     public void playSample(File sound, int vol, int pan) {
         try {
             Clip clip = AudioSystem.getClip();
@@ -305,6 +311,10 @@ public class Interfaz extends JFrame {
         }
     }
 
+    /**
+     * Reproduce el sonido solo para seleccionar el sonido, no inlcuye vol ni pan
+     * @param sound Archivo de sonidos
+     */
     public void playSamplePreview(File sound) {
         try {
             Clip clip = AudioSystem.getClip();
