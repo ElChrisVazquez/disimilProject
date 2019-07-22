@@ -24,7 +24,10 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.tree.TreePath;
 import secciones.Controlbar;
@@ -46,6 +49,8 @@ public class Interfaz extends JFrame {
     private ImageIcon iilogo, iiminipanel;
     private JLabel lblogo, lbminipanel;
     private Timer timer_minipanel, timer_play;
+    private JPopupMenu pop_arbol;
+    private JMenuItem jmiagregar;
 
     private Titlebar titlebar;
     private Controlbar controlbar;
@@ -104,6 +109,11 @@ public class Interfaz extends JFrame {
         principal = new PrincipalPanel(alto, 0);
         principal.setLocation(treepanel.getWidth() + 4, titlebar.getHeight());
 
+        // Inicializa el popmenu
+        pop_arbol = new JPopupMenu();
+        jmiagregar = new JMenuItem("Aregar");
+        pop_arbol.add(jmiagregar);
+
         // Crea animación de drop&drag
         timer_minipanel = new Timer(35, new ActionListener() {
             @Override
@@ -118,8 +128,27 @@ public class Interfaz extends JFrame {
             }
         });
 
-        // Evento Arbol drag and drop
+        // Evento Arbol drag and drop y click derecho
         treepanel.getArbol().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int row = treepanel.getArbol().getClosestRowForLocation(e.getX(), e.getY());
+                    treepanel.getArbol().setSelectionRow(row);
+                    TreePath tp = treepanel.getArbol().getSelectionPath();
+                    if (tp != null) {
+                        Object filePathToAdd = tp.getLastPathComponent();
+                        if (filePathToAdd instanceof File) {
+                            File node = (File) filePathToAdd;
+                            if (node.isFile() && node.getPath().endsWith(".wav")) {
+                                pop_arbol.show(e.getComponent(), e.getX(), e.getY());
+                            }
+                        }
+                    }
+                }
+
+            }
+
             @Override
             public void mousePressed(MouseEvent e) {
                 TreePath tp = treepanel.getArbol().getSelectionPath();
@@ -135,6 +164,7 @@ public class Interfaz extends JFrame {
                         }
                     }
                 }
+
             }
 
             @Override
@@ -231,10 +261,28 @@ public class Interfaz extends JFrame {
                 }
             }
         });
-        
-        
 
+        // Action listener pop agregar
+        jmiagregar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (file_selected != null) {
+                    try {
+                        principal.create(
+                                file_selected,
+                                file_selected.getName()
+                        );
+                    } catch (FontFormatException ex) {
+                        Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    file_selected = null;
+                }
+            }
+        });
 
+        this.add(pop_arbol);
         this.add(lbminipanel);
         this.add(principal);
         this.add(treepanel);

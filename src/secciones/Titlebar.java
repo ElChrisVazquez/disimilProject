@@ -24,8 +24,9 @@ public class Titlebar extends JPanel {
     private Colores colores;
     private Fuente fuente;
     private JMenuBar jmbbarra;
-    private JMenu jmarchivo;
-    private JMenuItem jmiabrir, jmiguardar, jmiguardar_como, jmiexportar, jmicerrrar;
+    private JMenu jmarchivo, jmanadir, jmayuda;
+    private JMenuItem jminuevo, jmiabrir, jmiguardar, jmiguardar_como,
+            jmiexportar, jmicerrrar, jmianadir, jmiacerca;
 
     public Titlebar(int ancho, String titulo) throws FontFormatException, IOException {
         this.setSize(ancho, alto);
@@ -117,18 +118,34 @@ public class Titlebar extends JPanel {
         //Crea barra de menu
         jmbbarra = new JMenuBar();
         jmbbarra.setBounds(0, 25, 200, 30);
+        
         jmarchivo = new JMenu("Archivo");
+        jmanadir = new JMenu("Añadir");
+        jmayuda = new JMenu("Ayuda");
+        
+        jminuevo = new JMenuItem("Nuevo");
         jmiabrir = new JMenuItem("Abrir");
         jmicerrrar = new JMenuItem("Cerrar");
         jmiexportar = new JMenuItem("Exportar");
         jmiguardar = new JMenuItem("Guardar");
         jmiguardar_como = new JMenuItem("Guardar como");
+        jmianadir = new JMenuItem("Sonido");
+        jmiacerca = new JMenuItem("Acerca de");
+        
         jmbbarra.add(jmarchivo);
+        jmbbarra.add(jmanadir);
+        jmbbarra.add(jmayuda);
+        
+        jmarchivo.add(jminuevo);
         jmarchivo.add(jmiabrir);
         jmarchivo.add(jmiguardar);
         jmarchivo.add(jmiguardar_como);
         jmarchivo.add(jmiexportar);
         jmarchivo.add(jmicerrrar);
+        
+        jmanadir.add(jmianadir);
+        
+        jmayuda.add(jmiacerca);
 
         this.add(lbico);
         this.add(lbtitle);

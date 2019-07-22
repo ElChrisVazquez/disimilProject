@@ -60,7 +60,10 @@ public class PrincipalPanel extends JPanel {
         jpinterno.setBorder(new EmptyBorder(10, 20, 10, 20));
 
         // Inicializa el scrollpane
-        jspcaja = new JScrollPane();
+        jspcaja = new JScrollPane(
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
         jspcaja.setLayout(null);
         jspcaja.setBounds(0, 0, ancho, alto);
         jspcaja.setBorder(null);
@@ -92,6 +95,7 @@ public class PrincipalPanel extends JPanel {
                     }
                 }
                 delete(index_to_delete);
+                repaint();
             }
         });
 
@@ -99,6 +103,13 @@ public class PrincipalPanel extends JPanel {
         this.add(jspcaja);
     }
 
+    /**
+     * Crea el panel de sonido
+     * @param sound Ruta del sonido
+     * @param nombre Nombre que aparecerá en el panel
+     * @throws FontFormatException
+     * @throws IOException 
+     */
     public void create(File sound, String nombre) throws FontFormatException, IOException {
         sounPanel = new SoundPanel(sound, nombre);
         sounPanel.addMouseListener(new MouseAdapter() {
@@ -114,31 +125,42 @@ public class PrincipalPanel extends JPanel {
         refresh();
     }
 
+    /**
+     * Actualiza las posiciones de los elementos en el panel principal
+     */
     public void refresh() {
         if (!splista.isEmpty()) {
             splista.forEach((sound) -> jpinterno.add(sound));
-            alto = boxsize * splista.size();    
+            alto = boxsize * splista.size();
             setSize(ancho, alto + 25);
             jpinterno.setSize(ancho, alto);
             jspcaja.setSize(ancho, alto);
             for (int i = 0; i < desplazamiento.length; i++) {
                 desplazamiento[i].setLocation(desplazamiento[i].getX(), alto + 15);
             }
+            for (int i = 0; i < jpinterno.getComponentCount(); i++) {
+            jpinterno.getComponent(i).setVisible(false);
+            jpinterno.getComponent(i).setVisible(true);
         }
-    }
-
-    public void delete(int index) {
-        splista.remove(index);
-        jpinterno.remove(index);
-        for (int i = 0; i < jpinterno.getComponentCount(); i++) {
-            jpinterno.getComponent(i).setLocation(0, 0);
         }
- 
     }
 
     /**
-     * La altura vuelve a 55 Limpia la lista Establece altura de los componentes
-     * internos.
+     * Borra el elemento seleccionado de la Arraylist como del contenedor
+     * @param index Numero del elemento
+     */
+    public void delete(int index) {
+        splista.remove(index);
+        jpinterno.remove(index);
+        refresh();
+        for (int i = 0; i < jpinterno.getComponentCount(); i++) {
+            jpinterno.getComponent(i).setVisible(false);
+            jpinterno.getComponent(i).setVisible(true);
+        }
+    }
+
+    /**
+     * Borra todos los elementos
      */
     public void deleteAll() {
         alto = boxempty;
