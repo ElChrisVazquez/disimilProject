@@ -13,8 +13,11 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class Controlbar extends JPanel {
@@ -33,6 +36,10 @@ public class Controlbar extends JPanel {
     private Colores colores;
     private Timer timerbpm;
     private int bpm_pressed, bpm_clicked;
+    private ActionListener al_pop_bpm;
+
+    private JPopupMenu pop_bpm;
+    private JMenuItem jmi80, jmi90, jmi100, jmi110, jmi120;
 
     public Controlbar() throws FontFormatException, IOException {
         this.setSize(ancho, alto);
@@ -100,6 +107,36 @@ public class Controlbar extends JPanel {
         btnloop.setSelectedIcon(iiloop_selected);
         btnloop.setBorder(null);
 
+        // Inicializa el popmenu
+        pop_bpm = new JPopupMenu();
+        jmi100 = new JMenuItem("100 bpm", 0);
+        jmi100.setName("100.00");
+        jmi110 = new JMenuItem("110 bpm", 0);
+        jmi110.setName("110.00");
+        jmi120 = new JMenuItem("120 bpm", 0);
+        jmi120.setName("120.00");
+        jmi80 = new JMenuItem("80 bpm", 0);
+        jmi80.setName("80.00");
+        jmi90 = new JMenuItem("90 bpm", 0);
+        jmi90.setName("90.00");
+        pop_bpm.add(jmi120);
+        pop_bpm.add(jmi110);
+        pop_bpm.add(jmi100);
+        pop_bpm.add(jmi90);
+        pop_bpm.add(jmi80);
+
+        // Inicializa el action para los pop del bpm
+        al_pop_bpm = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JMenuItem jmenu = (JMenuItem) ae.getSource();
+                bpm = Double.valueOf(jmenu.getName());
+                System.out.println(bpm);
+                lbvalor_bpm.setText(String.format("%.02f", bpm));
+                lbvalor_bpm.repaint();
+            }
+        };
+
         // Asigna tamaño, y posicion de botones
         btnnuevo.setBounds(0, 0, 30, 35);
         btnabrir.setBounds(30, 0, 30, 35);
@@ -152,6 +189,7 @@ public class Controlbar extends JPanel {
                 btnnuevo.setIcon(iinuevo);
             }
         });
+
         btnabrir.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -224,20 +262,33 @@ public class Controlbar extends JPanel {
         lbbmp.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
                 bpm_clicked = (int) MouseInfo.getPointerInfo().getLocation().getY();
                 timerbpm.start();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                super.mouseReleased(e);
                 timerbpm.stop();
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    pop_bpm.show(lbbmp, e.getX(), e.getY());
+                }
             }
 
         });
 
+        // Crea los eventos para el pop
+        jmi100.addActionListener(al_pop_bpm);
+        jmi110.addActionListener(al_pop_bpm);
+        jmi120.addActionListener(al_pop_bpm);
+        jmi90.addActionListener(al_pop_bpm);
+        jmi80.addActionListener(al_pop_bpm);
+
         // Agrega los componenetes
+        this.add(pop_bpm);
         this.add(btnloop);
         this.add(btnmetro);
         this.add(lbvalor_bpm);

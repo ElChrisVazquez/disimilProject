@@ -234,6 +234,8 @@ public class Interfaz extends JFrame {
         controlbar.getBtnplay().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                time_per_sample = (int)((240/controlbar.getBpm()*1000)/16);
+                System.out.println(time_per_sample);
                 timer_play.start();
             }
         });
