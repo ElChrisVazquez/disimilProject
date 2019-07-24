@@ -153,4 +153,14 @@ public class Titlebar extends JPanel {
         this.add(btnmin);
         this.add(jmbbarra);
     }
+
+    public JButton getBtncerrar() {
+        return btncerrar;
+    }
+
+    public JButton getBtnmin() {
+        return btnmin;
+    }
+    
+    
 }

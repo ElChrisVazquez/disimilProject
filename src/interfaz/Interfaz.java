@@ -46,7 +46,7 @@ public class Interfaz extends JFrame {
     private File file_selected;
 
     private Colores colores;
-    private ImageIcon iilogo, iiminipanel;
+    private ImageIcon iilogo, iiminipanel, iiico;
     private JLabel lblogo, lbminipanel;
     private Timer timer_minipanel, timer_play;
     private JPopupMenu pop_arbol;
@@ -80,6 +80,8 @@ public class Interfaz extends JFrame {
 
         // Carga logotipo
         iilogo = new ImageIcon("src/img/logo.png");
+        iiico = new ImageIcon("src/img/icono.png");
+        this.setIconImage(iiico.getImage());
 
         // Carga imagen para animacion
         iiminipanel = new ImageIcon("src/img/mini2.png");
@@ -194,6 +196,7 @@ public class Interfaz extends JFrame {
             }
         });
 
+        // Timer de reproduccion
         timer_play = new Timer(187, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -279,6 +282,35 @@ public class Interfaz extends JFrame {
                     }
                     file_selected = null;
                 }
+            }
+        });
+        
+        // Action de boton cerrar
+        titlebar.getBtncerrar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if(!principal.getSplista().isEmpty()){
+                    int respuesta = JOptionPane.showConfirmDialog(
+                            null,
+                            "Desea guardar el progreso?",
+                            "Esta apunto de salir",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    if (respuesta == JOptionPane.YES_OPTION) {
+                        System.exit(0);
+                    }
+                }else{
+                    System.exit(0);
+                }
+            }
+        });
+        
+        // Action de boton minimizar
+        titlebar.getBtnmin().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                setState(JFrame.ICONIFIED);
             }
         });
 
