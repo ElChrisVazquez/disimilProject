@@ -295,6 +295,7 @@ public class Interfaz extends JFrame {
 
     /**
      * Reproduce el archivo
+     *
      * @param sound Archivo de sonido
      * @param vol Volumen
      * @param pan Paneo
@@ -312,7 +313,9 @@ public class Interfaz extends JFrame {
     }
 
     /**
-     * Reproduce el sonido solo para seleccionar el sonido, no inlcuye vol ni pan
+     * Reproduce el sonido solo para seleccionar el sonido, no inlcuye vol ni
+     * pan
+     *
      * @param sound Archivo de sonidos
      */
     public void playSamplePreview(File sound) {

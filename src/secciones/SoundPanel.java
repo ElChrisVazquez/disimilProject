@@ -71,10 +71,18 @@ public class SoundPanel extends JPanel {
         btnmute.setBorder(null);
         btnpatron = new JToggleButton[16];
         for (int i = 0; i < btnpatron.length; i++) {
-            btnpatron[i] = new JToggleButton();
-            btnpatron[i].setIcon(iipatron);
-            btnpatron[i].setSelectedIcon(iipatron_relased);
-            btnpatron[i].setBorder(null);
+            if ((i > 3 && i < 8) || (i > 11 && i < 16)) {
+                btnpatron[i] = new JToggleButton();
+                btnpatron[i].setIcon(iipatron_black);
+                btnpatron[i].setSelectedIcon(iipatron_relased);
+                btnpatron[i].setBorder(null);
+            } else {
+                btnpatron[i] = new JToggleButton();
+                btnpatron[i].setIcon(iipatron);
+                btnpatron[i].setSelectedIcon(iipatron_relased);
+                btnpatron[i].setBorder(null);
+            }
+
         }
         btnsolo = new JToggleButton(iisolo);
         btnsolo.setSelectedIcon(iisolo_pressed);
