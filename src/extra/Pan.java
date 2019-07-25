@@ -10,7 +10,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class Pan extends JPanel{
+public class Pan extends JPanel {
+
     private final int ancho = 52;
     private final int alto = 12;
     private Colores colores;
@@ -31,21 +32,26 @@ public class Pan extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 pos_pressed = (int) MouseInfo.getPointerInfo().getLocation().getX();
                 if (pos_clicked > pos_pressed) {
-                    if(valori>0){
-                        valori-=2;
+                    if (valori > 0) {
+                        valori -= 2;
                     }
-                    if(valord>-25){
-                        valord-=2;
+                    if (valord > -24) {
+                        valord -= 2;
                     }
-                }else{
-                    if(valori<50){
-                        valori+=2;
+                    if (valor > - 24) {
+                        valor -= 2;
                     }
-                    if(valord<25){
-                        valord+=2;
+                } else {
+                    if (valori < 50) {
+                        valori += 2;
+                    }
+                    if (valord < 24) {
+                        valord += 2;
+                    }
+                    if (valor < 24) {
+                        valor += 2;
                     }
                 }
-                System.out.println(valord);
                 repaint();
             }
         });
@@ -65,21 +71,21 @@ public class Pan extends JPanel{
 
         });
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(colores.getVolPan());
-       
+
         //Dibuja el pan primer modulo
         g.drawRect(0, 0, valori, 10);
-        
+
         // Dibuja el pan segundo modulo
-        g.drawRect(valord+25, 0, 25-valord, 10);
-        
+        g.drawRect(valord + 25, 0, 25 - valord, 10);
+
     }
 
     public int getValor() {
         return valor;
     }
-    
 }

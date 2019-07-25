@@ -47,7 +47,7 @@ public class Controlbar extends JPanel {
 
         // Inicializa nativas
         bpm = 120.00;
-        tiempo = 0;
+        tiempo = 00.00;
         bpm_clicked = 0;
         bpm_pressed = 0;
 
@@ -339,4 +339,14 @@ public class Controlbar extends JPanel {
         return btnplay_status;
     }
 
+    public void changeStop(){
+        btnplay_status = false;
+        btnplay.setIcon(iiplay);
+    }
+
+    public JLabel getLbvalor_tiempo() {
+        return lbvalor_tiempo;
+    }
+    
+    
 }

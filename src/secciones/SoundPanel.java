@@ -6,6 +6,10 @@ import extra.Pan;
 import extra.Vol;
 import font.Fuente;
 import java.awt.FontFormatException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.BorderFactory;
@@ -14,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 
 public class SoundPanel extends JPanel {
 
@@ -32,8 +37,10 @@ public class SoundPanel extends JPanel {
     private Vol volumen;
     private Pan paneo;
 
-    private JPopupMenu jpop_menu;
-    private JMenuItem jmielminiar;
+    private JPopupMenu jpop_menu, jpop_patron;
+    private JMenuItem jmielminiar, jmi2, jmi4, jmi8, jmi1, jmi16;
+
+    private ActionListener al_patron;
 
     public SoundPanel(File sound, String nombre) throws FontFormatException, IOException {
         this.sound = sound;
@@ -98,10 +105,68 @@ public class SoundPanel extends JPanel {
         // Inicializa paneo
         paneo = new Pan();
 
-        // Inicializa popmenu
+        // Inicializa popmenu eliminar
         jpop_menu = new JPopupMenu();
         jmielminiar = new JMenuItem("Eliminar");
         jpop_menu.add(jmielminiar);
+
+        // Inicializa popmenu patrones
+        jpop_patron = new JPopupMenu();
+        jmi2 = new JMenuItem("Cada 2", 0);
+        jmi2.setName("2");
+        jmi4 = new JMenuItem("Cada 4", 0);
+        jmi4.setName("4");
+        jmi8 = new JMenuItem("Cada 8", 0);
+        jmi8.setName("8");
+        jmi1 = new JMenuItem("Todos", 0);
+        jmi1.setName("1");
+        jmi16 = new JMenuItem("Limpiar", 0);
+        jmi16.setName("16");
+        jpop_patron.add(jmi2);
+        jpop_patron.add(jmi4);
+        jpop_patron.add(jmi8);
+        jpop_patron.add(jmi1);
+        jpop_patron.add(jmi16);
+
+        //Action listener para pintar los patrones
+        al_patron = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JMenuItem jmi = (JMenuItem) e.getSource();
+                int modulo = Integer.valueOf(jmi.getName());
+                for (int i = 0; i < btnpatron.length; i++) {
+                    if (i % modulo == 0) {
+                        btnpatron[i].setSelected(true);
+                    }else{
+                        btnpatron[i].setSelected(false);
+                    }
+                }
+            }
+        };
+
+        // Añade el action a los jmi
+        jmi2.addActionListener(al_patron);
+        jmi4.addActionListener(al_patron);
+        jmi8.addActionListener(al_patron);
+        jmi1.addActionListener(al_patron);
+        jmi16.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (int i = 0; i < btnpatron.length; i++) {
+                    btnpatron[i].setSelected(false);
+                }
+            }
+        });
+
+        btnSound.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    jpop_patron.show(btnSound, e.getX(), e.getY());
+                }
+            }
+
+        });
 
         // Posiciona los botones
         btnsolo.setBounds(20, 40, 20, 20);
@@ -150,6 +215,14 @@ public class SoundPanel extends JPanel {
 
     public JMenuItem getJmielminiar() {
         return jmielminiar;
+    }
+
+    public JToggleButton getBtnmute() {
+        return btnmute;
+    }
+
+    public JToggleButton getBtnsolo() {
+        return btnsolo;
     }
 
     @Override

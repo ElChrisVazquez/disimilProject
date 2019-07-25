@@ -1,5 +1,6 @@
 package interfaz;
 
+import avanzado.Save;
 import java.awt.FontFormatException;
 import java.awt.HeadlessException;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioSystem;
@@ -24,6 +25,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -38,10 +40,11 @@ import secciones.TreePanel; // Importa el panel de arbol
 
 public class Interfaz extends JFrame {
 
-    private final int ancho = 1000;
-    private final int alto = 500;
+    private final int ancho = 1000;//1366
+    private final int alto = 500;//768
     private final double bpm_time = 240.00;
-    private double time_per_sample;
+    private double time, time_add;
+    private int time_per_sample;
     private int beat = 0;
     private File file_selected;
 
@@ -51,12 +54,14 @@ public class Interfaz extends JFrame {
     private Timer timer_minipanel, timer_play;
     private JPopupMenu pop_arbol;
     private JMenuItem jmiagregar;
+    private JFileChooser jfc_open, jfc_save;
 
     private Titlebar titlebar;
     private Controlbar controlbar;
     private TreePanel treepanel;
     private PrincipalPanel principal;
     private SoundPanel soundpanel;
+    private Save guardar;
 
     public Interfaz(String path) throws HeadlessException, FontFormatException, IOException {
         this.setSize(ancho, alto);
@@ -67,7 +72,9 @@ public class Interfaz extends JFrame {
         this.setUndecorated(true);
 
         // Inicializa nativos
-        time_per_sample = 0;
+        time_per_sample = 125;
+        time = 0;
+        time_add = 0;
 
         // Se inicializa el file que guarda la seleccion del arbol
         file_selected = null;
@@ -115,6 +122,12 @@ public class Interfaz extends JFrame {
         pop_arbol = new JPopupMenu();
         jmiagregar = new JMenuItem("Aregar");
         pop_arbol.add(jmiagregar);
+
+        // Inicializa JChosse
+        jfc_save = new JFileChooser();
+        jfc_save.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        jfc_open = new JFileChooser();
+        jfc_open.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         // Crea animación de drop&drag
         timer_minipanel = new Timer(35, new ActionListener() {
@@ -197,16 +210,19 @@ public class Interfaz extends JFrame {
         });
 
         // Timer de reproduccion
-        timer_play = new Timer(187, new ActionListener() {
+        timer_play = new Timer((int) time_per_sample, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (beat < 16) {
+                    time_add += time;
+                    controlbar.getLbvalor_tiempo().setText(String.format("%.02f", time_add / 1000));
+                    controlbar.getLbvalor_tiempo().repaint();
                     for (int i = 0; i < principal.getSplista().size(); i++) {
                         if (principal.getSplista().get(i).getBtnpatron()[beat].isSelected()) {
                             playSample(
                                     principal.getSplista().get(i).getSound(),
-                                    principal.getSplista().get(i).getVolumen().getValor(),
-                                    principal.getSplista().get(i).getPaneo().getValor());
+                                    (int) principal.getSplista().get(i).getVolumen().getValor(),
+                                    (int) principal.getSplista().get(i).getPaneo().getValor());
                         }
                         principal.getDesplazamiento()[beat].setBackground(colores.getVolPan());
                         if (beat == 0) {
@@ -217,14 +233,19 @@ public class Interfaz extends JFrame {
                         }
                     }
                 }
+                time_per_sample = (int) (((240 / controlbar.getBpm()) * 1000) / 16);
+                timer_play.setDelay(time_per_sample);
                 beat++;
                 // Si está desactivado el loop se detiene
                 if (beat == 16) {
                     if (controlbar.getBtnloop().isSelected()) {
                         beat = 0;
+                        time_add = 0;
                     } else {
                         timer_play.stop();
                         principal.getDesplazamiento()[beat - 1].setBackground(colores.getBackRepro());
+                        stop();
+                        time_add = 0;
                     }
                 }
             }
@@ -234,8 +255,8 @@ public class Interfaz extends JFrame {
         controlbar.getBtnplay().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                time_per_sample = (int)((240/controlbar.getBpm()*1000)/16);
-                System.out.println(time_per_sample);
+                time_per_sample = (int) (((240 / controlbar.getBpm()) * 1000) / 16);
+                time = (int) (((240 / controlbar.getBpm()) * 1000) / 16);
                 timer_play.start();
             }
         });
@@ -286,12 +307,12 @@ public class Interfaz extends JFrame {
                 }
             }
         });
-        
+
         // Action de boton cerrar
         titlebar.getBtncerrar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                if(!principal.getSplista().isEmpty()){
+                if (!principal.getSplista().isEmpty()) {
                     int respuesta = JOptionPane.showConfirmDialog(
                             null,
                             "Desea guardar el progreso?",
@@ -302,12 +323,12 @@ public class Interfaz extends JFrame {
                     if (respuesta == JOptionPane.YES_OPTION) {
                         System.exit(0);
                     }
-                }else{
+                } else {
                     System.exit(0);
                 }
             }
         });
-        
+
         // Action de boton minimizar
         titlebar.getBtnmin().addActionListener(new ActionListener() {
             @Override
@@ -316,15 +337,72 @@ public class Interfaz extends JFrame {
             }
         });
 
+        // Action boton guardar
+        controlbar.getBtnguardar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!principal.getSplista().isEmpty()) {
+                    int resp = jfc_save.showSaveDialog(null);
+                    if (resp == JFileChooser.APPROVE_OPTION) {
+                        File salida = new File(jfc_save.getSelectedFile().getAbsolutePath() + ".pdr");
+                        if (salida.exists()) {
+                            int confirm = JOptionPane.showConfirmDialog(
+                                    null,
+                                    "Desea remplazar el archivo existente?",
+                                    "Advertencia!",
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                            if (confirm == JOptionPane.YES_OPTION) {
+                                try {
+                                    guardar = new Save(
+                                            salida.getAbsolutePath(),
+                                            path,
+                                            controlbar.getBpm(),
+                                            controlbar.getBtnmetro().isSelected(),
+                                            controlbar.getBtnloop().isSelected(),
+                                            principal.getSplista().size(),
+                                            principal.getSplista()
+                                    );
+                                } catch (FileNotFoundException ex) {
+                                    Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        } else {
+                            try {
+                                guardar = new Save(
+                                        salida.getAbsolutePath(),
+                                        path,
+                                        controlbar.getBpm(),
+                                        controlbar.getBtnmetro().isSelected(),
+                                        controlbar.getBtnloop().isSelected(),
+                                        principal.getSplista().size(),
+                                        principal.getSplista()
+                                );
+                            } catch (FileNotFoundException ex) {
+                                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        );
+
         this.add(pop_arbol);
+
         this.add(lbminipanel);
+
         this.add(principal);
+
         this.add(treepanel);
+
         this.add(lblogo);
+
         this.add(controlbar);
+
         this.add(titlebar);
 
-        setVisible(true);
+        setVisible(
+                true);
     }
 
     /**
@@ -339,7 +417,9 @@ public class Interfaz extends JFrame {
             Clip clip = AudioSystem.getClip();
             clip.open(AudioSystem.getAudioInputStream(sound));
             FloatControl gain_control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            gain_control.setValue(0);
+            FloatControl pan_control = (FloatControl) clip.getControl(FloatControl.Type.PAN);
+            pan_control.setValue((float) (pan * 0.04));
+            gain_control.setValue(vol);
             clip.start();
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException exc) {
             exc.printStackTrace(System.out);
@@ -364,20 +444,6 @@ public class Interfaz extends JFrame {
         }
     }
 
-    // 240s = 1bpm entre 16 botones y en microsegundos
-    public void play(
-            ArrayList<SoundPanel> splista,
-            double bpm,
-            boolean isActivateMetro,
-            boolean isActivateLoop
-    ) {
-        double time_per_sample = ((bpm_time / bpm) / 16) * 1000;
-        if (!splista.isEmpty()) {
-
-            timer_play.start();
-        }
-    }
-
     public void stop() {
         if (beat > 0) {
             principal.getDesplazamiento()[beat - 1].setBackground(colores.getBackRepro());
@@ -385,6 +451,23 @@ public class Interfaz extends JFrame {
         principal.getDesplazamiento()[15].setBackground(colores.getBackRepro());
         timer_play.stop();
         beat = 0;
+        controlbar.changeStop();
+    }
+
+    public Titlebar getTitlebar() {
+        return titlebar;
+    }
+
+    public Controlbar getControlbar() {
+        return controlbar;
+    }
+
+    public TreePanel getTreepanel() {
+        return treepanel;
+    }
+
+    public PrincipalPanel getPrincipal() {
+        return principal;
     }
 
     public static void main(String[] args) throws HeadlessException, FontFormatException, IOException {

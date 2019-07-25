@@ -22,7 +22,7 @@ public class Vol extends JPanel {
         this.setSize(ancho, alto);
         colores = new Colores();
         this.setBackground(colores.getSoundPanel());
-        valor = 100;
+        valor = 0;
         pos_clicked = 0;
         pos_pressed = 0;
         timer = new Timer(100, new ActionListener() {
@@ -30,15 +30,16 @@ public class Vol extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 pos_pressed = (int) MouseInfo.getPointerInfo().getLocation().getX();
                 if (pos_clicked > pos_pressed) {
-                    if (valor > 0) {
-                        valor-=2;
+                    if (valor > -80) {
+                        valor -= 2;
                     }
                 } else {
-                    if (valor < 101) {
-                        valor+=2;
+                    if (valor < 0) {
+                        valor += 2;
                     }
                 }
                 repaint();
+                System.out.println(valor);
             }
         });
         this.addMouseListener(new MouseAdapter() {
@@ -66,7 +67,7 @@ public class Vol extends JPanel {
 
         // Dibuja el volumen
         g.drawRect(0, 0, 50, 10);
-        g.fillRect(0, 0, (int)valor/2, 10);
+        g.fillRect(0, 0, 50-(int)(valor*-0.625), 10);
     }
 
     public int getValor() {

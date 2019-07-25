@@ -134,7 +134,12 @@ public class PrincipalPanel extends JPanel {
             alto = boxsize * splista.size();
             setSize(ancho, alto + 25);
             jpinterno.setSize(ancho, alto);
-            jspcaja.setSize(ancho, alto);
+            if(alto > 500){
+                jspcaja.setSize(ancho, 500);
+                jspcaja.setVisible(true);
+            }else{
+                jspcaja.setSize(ancho, alto);
+            }
             for (int i = 0; i < desplazamiento.length; i++) {
                 desplazamiento[i].setLocation(desplazamiento[i].getX(), alto + 15);
             }
