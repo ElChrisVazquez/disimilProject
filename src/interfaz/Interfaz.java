@@ -18,6 +18,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioSystem;
@@ -31,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.TreePath;
 import secciones.Controlbar;
 import secciones.PrincipalPanel;
@@ -40,8 +44,8 @@ import secciones.TreePanel; // Importa el panel de arbol
 
 public class Interfaz extends JFrame {
 
-    private final int ancho = 1000;//1366
-    private final int alto = 500;//768
+    private final int ancho = 1366;//1366
+    private final int alto = 768;//768
     private final double bpm_time = 240.00;
     private double time, time_add;
     private int time_per_sample;
@@ -54,7 +58,7 @@ public class Interfaz extends JFrame {
     private Timer timer_minipanel, timer_play;
     private JPopupMenu pop_arbol;
     private JMenuItem jmiagregar;
-    private JFileChooser jfc_open, jfc_save;
+    private JFileChooser jfc_open, jfc_save, jfc_new;
 
     private Titlebar titlebar;
     private Controlbar controlbar;
@@ -62,8 +66,10 @@ public class Interfaz extends JFrame {
     private PrincipalPanel principal;
     private SoundPanel soundpanel;
     private Save guardar;
+    private ArrayList<String> lista;
+    private FileNameExtensionFilter filter;
 
-    public Interfaz(String path) throws HeadlessException, FontFormatException, IOException {
+    public Interfaz(String path, String name) throws HeadlessException, FontFormatException, IOException {
         this.setSize(ancho, alto);
         this.setDefaultCloseOperation(3);
         this.setLocationRelativeTo(null);
@@ -75,6 +81,9 @@ public class Interfaz extends JFrame {
         time_per_sample = 125;
         time = 0;
         time_add = 0;
+
+        // Inicializa lista de apertura
+        lista = new ArrayList<>();
 
         // Se inicializa el file que guarda la seleccion del arbol
         file_selected = null;
@@ -128,6 +137,11 @@ public class Interfaz extends JFrame {
         jfc_save.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jfc_open = new JFileChooser();
         jfc_open.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        filter = new FileNameExtensionFilter("dP Project", "pdr");
+        jfc_open.setFileFilter(filter);
+        jfc_new = new JFileChooser();
+        jfc_new.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        jfc_new.setDialogTitle("Seleccione la biblioteca");
 
         // Crea animación de drop&drag
         timer_minipanel = new Timer(35, new ActionListener() {
@@ -282,7 +296,22 @@ public class Interfaz extends JFrame {
                             JOptionPane.WARNING_MESSAGE
                     );
                     if (respuesta == JOptionPane.YES_OPTION) {
-                        principal.deleteAll();
+                        int resp = jfc_new.showDialog(null, "Seleccionar");
+                        if (resp == JFileChooser.APPROVE_OPTION) {
+                            try {
+                                Interfaz nueva = new Interfaz(
+                                        jfc_new.getSelectedFile().getAbsolutePath(),
+                                        "Sin-Titulo"
+                                );
+                                dispose();
+                            } catch (HeadlessException ex) {
+                                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (FontFormatException ex) {
+                                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
                     }
                 }
             }
@@ -320,7 +349,7 @@ public class Interfaz extends JFrame {
                             JOptionPane.YES_NO_CANCEL_OPTION,
                             JOptionPane.WARNING_MESSAGE
                     );
-                    if (respuesta == JOptionPane.YES_OPTION) {
+                    if (respuesta == JOptionPane.NO_OPTION) {
                         System.exit(0);
                     }
                 } else {
@@ -387,22 +416,42 @@ public class Interfaz extends JFrame {
         }
         );
 
+        // Action boton Abrir
+        controlbar.getBtnabrir().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int resp = jfc_open.showSaveDialog(null);
+                if (resp == JFileChooser.APPROVE_OPTION) {
+                    File entrada = jfc_open.getSelectedFile();
+                    try {
+                        lista = (ArrayList<String>) Files.readAllLines(
+                                Paths.get(entrada.getAbsolutePath()));
+                        Interfaz abrir = new Interfaz(
+                                lista.get(1),
+                                entrada.getName()
+                        );
+                        abrir.openNew(jfc_open.getSelectedFile());
+                        dispose();
+                    } catch (HeadlessException ex) {
+                        Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (FontFormatException ex) {
+                        Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+            }
+        });
+
         this.add(pop_arbol);
-
         this.add(lbminipanel);
-
         this.add(principal);
-
         this.add(treepanel);
-
         this.add(lblogo);
-
         this.add(controlbar);
-
         this.add(titlebar);
-
-        setVisible(
-                true);
+        this.setVisible(true);
     }
 
     /**
@@ -454,23 +503,46 @@ public class Interfaz extends JFrame {
         controlbar.changeStop();
     }
 
-    public Titlebar getTitlebar() {
-        return titlebar;
+    public void openNew(File entrada) throws IOException {
+        lista = (ArrayList<String>) Files.readAllLines(
+                Paths.get(entrada.getAbsolutePath()));
+        titlebar.getLbtitle().setText(entrada.getName() + " - disímil PROJECT");
+        controlbar.establecerBPM(Double.valueOf(lista.get(2)));
+        if (lista.get(3).equals("1")) {
+            controlbar.getBtnmetro().setSelected(true);
+        }
+        if (lista.get(4).equals("1")) {
+            controlbar.getBtnloop().setSelected(true);
+        }
+        int cont = 6;
+        for (int i = 0; i < Integer.valueOf(lista.get(5)); i++) {
+            try {
+                File aux = new File(lista.get(cont));
+                principal.create(aux, aux.getName());
+                cont++;
+                if (lista.get(cont).equals("1")) {
+                    principal.getSplista().get(i).getBtnsolo().setSelected(true);
+                }
+                cont++;
+                if (lista.get(cont).equals("1")) {
+                    principal.getSplista().get(i).getBtnmute().setSelected(true);
+                }
+                cont++;
+                principal.getSplista().get(i).getVolumen().setValor(Integer.valueOf(lista.get(cont)));
+                cont++;
+                principal.getSplista().get(i).getPaneo().setValor(Integer.valueOf(lista.get(cont)));
+                cont++;
+                char[] patron = lista.get(cont).toCharArray();
+                for (int j = 0; j < patron.length; j++) {
+                    if (patron[j] == '1') {
+                        principal.getSplista().get(i).getBtnpatron()[j].setSelected(true);
+                    }
+                }
+                cont++;
+            } catch (FontFormatException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
-    public Controlbar getControlbar() {
-        return controlbar;
-    }
-
-    public TreePanel getTreepanel() {
-        return treepanel;
-    }
-
-    public PrincipalPanel getPrincipal() {
-        return principal;
-    }
-
-    public static void main(String[] args) throws HeadlessException, FontFormatException, IOException {
-        Interfaz interfaz = new Interfaz("src");
-    }
 }

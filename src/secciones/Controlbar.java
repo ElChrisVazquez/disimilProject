@@ -339,7 +339,7 @@ public class Controlbar extends JPanel {
         return btnplay_status;
     }
 
-    public void changeStop(){
+    public void changeStop() {
         btnplay_status = false;
         btnplay.setIcon(iiplay);
     }
@@ -347,6 +347,10 @@ public class Controlbar extends JPanel {
     public JLabel getLbvalor_tiempo() {
         return lbvalor_tiempo;
     }
-    
-    
+
+    public void establecerBPM(Double bpm_otigen) {
+        bpm = bpm_otigen;
+        lbvalor_bpm.setText(String.format("%.02f", bpm));
+    }
+
 }

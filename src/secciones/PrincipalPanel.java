@@ -135,7 +135,7 @@ public class PrincipalPanel extends JPanel {
             setSize(ancho, alto + 25);
             jpinterno.setSize(ancho, alto);
             if(alto > 500){
-                jspcaja.setSize(ancho, 500);
+                jspcaja.setSize(ancho, alto);
                 jspcaja.setVisible(true);
             }else{
                 jspcaja.setSize(ancho, alto);

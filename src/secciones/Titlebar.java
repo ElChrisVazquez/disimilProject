@@ -131,6 +131,14 @@ public class Titlebar extends JPanel {
         jmiguardar_como = new JMenuItem("Guardar como");
         jmianadir = new JMenuItem("Sonido");
         jmiacerca = new JMenuItem("Acerca de");
+        jminuevo.setEnabled(false);
+        jmiabrir.setEnabled(false);
+        jmicerrrar.setEnabled(false);
+        jmiexportar.setEnabled(false);
+        jmiguardar.setEnabled(false);
+        jmiguardar_como.setEnabled(false);
+        jmianadir.setEnabled(false);
+        jmiacerca.setEnabled(false);
         
         jmbbarra.add(jmarchivo);
         jmbbarra.add(jmanadir);
@@ -161,6 +169,9 @@ public class Titlebar extends JPanel {
     public JButton getBtnmin() {
         return btnmin;
     }
-    
+
+    public JLabel getLbtitle() {
+        return lbtitle;
+    }
     
 }

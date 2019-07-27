@@ -73,4 +73,9 @@ public class Vol extends JPanel {
     public int getValor() {
         return valor;
     }
+    
+    public void setValor(int aux){
+        valor = aux;
+        repaint();
+    }
 }
