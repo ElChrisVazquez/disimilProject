@@ -44,8 +44,8 @@ import secciones.TreePanel; // Importa el panel de arbol
 
 public class Interfaz extends JFrame {
 
-    private final int ancho = 1366;//1366
-    private final int alto = 768;//768
+    private final int ancho = 1440;//1366
+    private final int alto = 900;//768
     private final double bpm_time = 240.00;
     private double time, time_add;
     private int time_per_sample;
